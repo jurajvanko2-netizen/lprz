@@ -3,6 +3,12 @@
  * LIPOREZ — Hlavná stránka
  * Galérie sa načítavajú dynamicky z priečinkov img/[kategória]/
  */
+session_name('liporez_site');
+session_start();
+if (!isset($_SESSION['site_access'])) {
+    header('Location: login.php');
+    exit;
+}
 
 function getGalleryImages(string $category): array {
     $dir = __DIR__ . '/img/' . $category . '/';
