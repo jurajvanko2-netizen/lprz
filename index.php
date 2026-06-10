@@ -304,7 +304,7 @@ function galleryItems(array $images, string $caption): string {
   }
 
   /* CRED CARDS */
-  .cred-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; height: 100%; align-content: stretch; }
+  .cred-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-content: start; align-items: start; }
   .cred-card {
     background: rgba(124,82,48,0.1); border: 1px solid rgba(124,82,48,0.25);
     border-radius: 8px; padding: 16px 18px;
@@ -574,7 +574,7 @@ function galleryItems(array $images, string $caption): string {
 
     <!-- VPRAVO: kartičky -->
     <div class="about-right">
-      <div class="cred-grid" style="height:100%;">
+      <div class="cred-grid">
         <div class="cred-card featured" style="padding:12px 14px;">
           <div class="cred-title" style="font-size:17px;">Czech-ART Festival 2011</div>
           <div class="cred-text" style="font-size:15px;">Cena organizátora Drevo-Sochy, České Budejovice</div>
