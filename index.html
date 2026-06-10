@@ -435,6 +435,23 @@
     section#omne { padding-left: 20px !important; padding-right: 20px !important; }
   }
 
+  /* SHOW MORE */
+  .show-more-btn {
+    display: block;
+    margin: 24px auto 0;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background: transparent;
+    color: #7C5230;
+    border: 1px solid #7C5230;
+    padding: 10px 32px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .show-more-btn:hover { background: #7C5230; color: #F0DEC0; }
+
   @media (max-width: 480px) {
     .hero h1 { font-size: 28px; }
     .cat-grid { grid-template-columns: 1fr; }
@@ -444,6 +461,7 @@
     .stat { flex: 1 1 100%; }
   }
 </style>
+<link rel="stylesheet" href="custom.css">
 </head>
 <body>
 
@@ -879,6 +897,35 @@
     if (e.key === 'ArrowLeft') lbNav(-1);
     if (e.key === 'ArrowRight') lbNav(1);
   });
+
+  // SHOW MORE
+  (function() {
+    var PAGE_SIZE = 15;
+    document.querySelectorAll('.gallery-grid').forEach(function(grid) {
+      var items = Array.from(grid.querySelectorAll('.gallery-item'));
+      if (items.length <= PAGE_SIZE) return;
+      var shown = PAGE_SIZE;
+      items.forEach(function(item, i) {
+        if (i >= PAGE_SIZE) item.style.display = 'none';
+      });
+      var btn = document.createElement('button');
+      btn.className = 'show-more-btn';
+      btn.textContent = 'Ukázať viac (' + (items.length - shown) + ')';
+      grid.insertAdjacentElement('afterend', btn);
+      btn.addEventListener('click', function() {
+        var nextShown = Math.min(shown + PAGE_SIZE, items.length);
+        for (var i = shown; i < nextShown; i++) {
+          items[i].style.display = '';
+        }
+        shown = nextShown;
+        if (shown >= items.length) {
+          btn.style.display = 'none';
+        } else {
+          btn.textContent = 'Ukázať viac (' + (items.length - shown) + ')';
+        }
+      });
+    });
+  })();
 </script>
 </body>
 </html>

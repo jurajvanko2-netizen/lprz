@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIPOREZ Admin — Správa štýlov</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #1A0C04; color: #F0DEC0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+
+  /* LOGIN */
+  #login-screen {
+    background: #0D0600;
+    border: 1px solid #5A3010;
+    border-radius: 12px;
+    padding: 48px 56px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  #login-screen h1 { font-size: 26px; letter-spacing: 4px; color: #F0DEC0; margin-bottom: 6px; }
+  #login-screen p { font-size: 13px; color: #7A5A3A; margin-bottom: 32px; }
+  #login-screen input {
+    width: 100%; padding: 11px 16px; background: #180A02; border: 1px solid #5A3010;
+    border-radius: 6px; color: #F0DEC0; font-size: 15px; margin-bottom: 14px; outline: none;
+  }
+  #login-screen input:focus { border-color: #B8864E; }
+  #login-error { color: #D46050; font-size: 13px; margin-bottom: 12px; min-height: 18px; }
+  .btn-login {
+    width: 100%; padding: 12px; background: #7C5230; color: #F0DEC0; border: none;
+    border-radius: 6px; font-size: 15px; cursor: pointer; transition: background 0.2s;
+  }
+  .btn-login:hover { background: #9A6A40; }
+
+  /* ADMIN PANEL */
+  #admin-panel { display: none; width: 100%; max-width: 760px; padding: 32px 24px; }
+  .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+  .admin-header h1 { font-size: 22px; letter-spacing: 3px; color: #F0DEC0; }
+  .admin-header a { font-size: 13px; color: #7A5A3A; text-decoration: none; border: 1px solid #5A3010; padding: 6px 14px; border-radius: 5px; }
+  .admin-header a:hover { color: #C4A882; border-color: #9A6A40; }
+
+  .card {
+    background: #0D0600;
+    border: 1px solid #3A1A08;
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+  .card h2 { font-size: 15px; letter-spacing: 1.5px; text-transform: uppercase; color: #B8864E; margin-bottom: 22px; }
+
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 32px; }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field label { font-size: 13px; color: #9A7A5A; letter-spacing: 0.5px; }
+  .field-color { display: flex; align-items: center; gap: 10px; }
+  .field-color input[type="color"] {
+    width: 44px; height: 36px; padding: 2px; border: 1px solid #5A3010;
+    border-radius: 5px; background: #180A02; cursor: pointer;
+  }
+  .field-color input[type="text"] {
+    flex: 1; padding: 8px 12px; background: #180A02; border: 1px solid #5A3010;
+    border-radius: 5px; color: #F0DEC0; font-size: 14px; font-family: monospace; outline: none;
+  }
+  .field-color input[type="text"]:focus { border-color: #B8864E; }
+
+  .field-range { display: flex; align-items: center; gap: 12px; }
+  .field-range input[type="range"] { flex: 1; accent-color: #B8864E; }
+  .field-range .range-val {
+    font-size: 14px; font-family: monospace; color: #F0DEC0;
+    background: #180A02; border: 1px solid #5A3010; border-radius: 5px;
+    padding: 6px 10px; min-width: 52px; text-align: center;
+  }
+
+  .preview-bar {
+    margin-top: 22px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #3A1A08;
+  }
+  .preview-section {
+    padding: 14px 18px;
+    font-size: 14px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .preview-card {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  .preview-btn {
+    display: inline-block;
+    padding: 7px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #F0DEC0;
+  }
+
+  .actions { display: flex; gap: 12px; margin-top: 24px; }
+  .btn-save {
+    flex: 1; padding: 13px; background: #7C5230; color: #F0DEC0; border: none;
+    border-radius: 6px; font-size: 15px; cursor: pointer; transition: background 0.2s;
+  }
+  .btn-save:hover { background: #9A6A40; }
+  .btn-save:disabled { opacity: 0.5; cursor: default; }
+  .btn-reset {
+    padding: 13px 24px; background: transparent; color: #9A7A5A; border: 1px solid #5A3010;
+    border-radius: 6px; font-size: 15px; cursor: pointer; transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-reset:hover { border-color: #9A6A40; color: #C4A882; }
+
+  #status-msg { margin-top: 14px; font-size: 14px; text-align: center; min-height: 20px; }
+  #status-msg.ok { color: #7ABF7A; }
+  #status-msg.err { color: #D46050; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <h1>LIPOREZ</h1>
+  <p>Admin — správa štýlov</p>
+  <input type="password" id="pwd-input" placeholder="Heslo" autocomplete="current-password">
+  <div id="login-error"></div>
+  <button class="btn-login" onclick="doLogin()">Prihlásiť sa</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <div class="admin-header">
+    <h1>LIPOREZ · Správa štýlov</h1>
+    <a href="index.html" target="_blank">Otvoriť stránku →</a>
+  </div>
+
+  <div class="card">
+    <h2>Farby</h2>
+    <div class="field-grid">
+
+      <div class="field">
+        <label>Pozadie stránky (svetlé sekcie)</label>
+        <div class="field-color">
+          <input type="color" id="c-bg" value="#F5EDE0" oninput="syncColor('bg')">
+          <input type="text" id="t-bg" value="#F5EDE0" oninput="syncText('bg')" maxlength="7">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Pozadie — krémové sekcie</label>
+        <div class="field-color">
+          <input type="color" id="c-bg2" value="#EDE0CE" oninput="syncColor('bg2')">
+          <input type="text" id="t-bg2" value="#EDE0CE" oninput="syncText('bg2')" maxlength="7">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Farba textu</label>
+        <div class="field-color">
+          <input type="color" id="c-text" value="#1A0C04" oninput="syncColor('text')">
+          <input type="text" id="t-text" value="#1A0C04" oninput="syncText('text')" maxlength="7">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Okraje rámov (galéria / karty)</label>
+        <div class="field-color">
+          <input type="color" id="c-border" value="#DDD0B8" oninput="syncColor('border')">
+          <input type="text" id="t-border" value="#DDD0B8" oninput="syncText('border')" maxlength="7">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Akcentová farba (tlačidlá, links)</label>
+        <div class="field-color">
+          <input type="color" id="c-accent" value="#7C5230" oninput="syncColor('accent')">
+          <input type="text" id="t-accent" value="#7C5230" oninput="syncText('accent')" maxlength="7">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Pozadie tmavých sekcií (O mne)</label>
+        <div class="field-color">
+          <input type="color" id="c-bgDark" value="#0D0600" oninput="syncColor('bgDark')">
+          <input type="text" id="t-bgDark" value="#0D0600" oninput="syncText('bgDark')" maxlength="7">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LIVE PREVIEW -->
+    <div class="preview-bar" id="preview-bar">
+      <div class="preview-section" id="prev-light">
+        <span id="prev-text-sample">Ukážka textu — rezbárstvo a stolárstvo</span>
+        <span class="preview-card" id="prev-card">Rámček karty</span>
+        <span class="preview-btn" id="prev-btn">Tlačidlo</span>
+      </div>
+      <div class="preview-section" id="prev-cream">
+        <span style="font-size:13px; color:#7A5A3A;">Krémová sekcia</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Typografia</h2>
+    <div class="field">
+      <label>Veľkosť základného písma</label>
+      <div class="field-range">
+        <input type="range" id="r-fs" min="14" max="32" value="22" oninput="updateFontSize()">
+        <span class="range-val" id="v-fs">22px</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-save" id="btn-save" onclick="saveStyles()">Uložiť zmeny</button>
+    <button class="btn-reset" onclick="resetStyles()">Reset na predvolené</button>
+  </div>
+  <div id="status-msg"></div>
+</div>
+
+<script>
+var PASSWORD = '';
+var DEFAULTS = {
+  bg: '#F5EDE0', bg2: '#EDE0CE', bgDark: '#0D0600',
+  text: '#1A0C04', border: '#DDD0B8', accent: '#7C5230', fontSize: 22
+};
+
+function doLogin() {
+  var pwd = document.getElementById('pwd-input').value;
+  if (pwd === 'liporez2024') {
+    PASSWORD = pwd;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    loadCurrentVars();
+  } else {
+    document.getElementById('login-error').textContent = 'Nesprávne heslo.';
+  }
+}
+document.getElementById('pwd-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+
+function loadCurrentVars() {
+  fetch('custom_vars.json?v=' + Date.now())
+    .then(function(r) { return r.ok ? r.json() : {}; })
+    .catch(function() { return {}; })
+    .then(function(v) {
+      if (!v || !Object.keys(v).length) return;
+      var keys = ['bg','bg2','bgDark','text','border','accent'];
+      keys.forEach(function(k) {
+        if (v[k]) {
+          document.getElementById('c-' + k).value = v[k];
+          document.getElementById('t-' + k).value = v[k];
+        }
+      });
+      if (v.fontSize) {
+        document.getElementById('r-fs').value = v.fontSize;
+        document.getElementById('v-fs').textContent = v.fontSize + 'px';
+      }
+      updatePreview();
+    });
+}
+
+function syncColor(key) {
+  var val = document.getElementById('c-' + key).value;
+  document.getElementById('t-' + key).value = val;
+  updatePreview();
+}
+function syncText(key) {
+  var val = document.getElementById('t-' + key).value;
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+    document.getElementById('c-' + key).value = val;
+    updatePreview();
+  }
+}
+function updateFontSize() {
+  var v = document.getElementById('r-fs').value;
+  document.getElementById('v-fs').textContent = v + 'px';
+}
+
+function getValues() {
+  return {
+    bg: document.getElementById('t-bg').value,
+    bg2: document.getElementById('t-bg2').value,
+    bgDark: document.getElementById('t-bgDark').value,
+    text: document.getElementById('t-text').value,
+    border: document.getElementById('t-border').value,
+    accent: document.getElementById('t-accent').value,
+    fontSize: parseInt(document.getElementById('r-fs').value)
+  };
+}
+
+function updatePreview() {
+  var v = getValues();
+  var light = document.getElementById('prev-light');
+  var cream = document.getElementById('prev-cream');
+  light.style.background = v.bg;
+  light.style.color = v.text;
+  cream.style.background = v.bg2;
+  var card = document.getElementById('prev-card');
+  card.style.border = '1px solid ' + v.border;
+  card.style.color = v.text;
+  var btn = document.getElementById('prev-btn');
+  btn.style.background = v.accent;
+}
+
+function saveStyles() {
+  var v = getValues();
+  v.password = PASSWORD;
+  var btn = document.getElementById('btn-save');
+  btn.disabled = true;
+  btn.textContent = 'Ukladám…';
+  fetch('save_css.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(v)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    btn.disabled = false;
+    btn.textContent = 'Uložiť zmeny';
+    var msg = document.getElementById('status-msg');
+    if (data.ok) {
+      msg.textContent = '✓ Zmeny uložené — stránka je aktualizovaná.';
+      msg.className = 'ok';
+    } else {
+      msg.textContent = '✕ Chyba: ' + (data.error || 'neznáma');
+      msg.className = 'err';
+    }
+    setTimeout(function() { msg.textContent = ''; }, 4000);
+  })
+  .catch(function() {
+    btn.disabled = false;
+    btn.textContent = 'Uložiť zmeny';
+    var msg = document.getElementById('status-msg');
+    msg.textContent = '✕ Chyba siete — skúste znova.';
+    msg.className = 'err';
+  });
+}
+
+function resetStyles() {
+  if (!confirm('Resetovať všetky štýly na predvolené hodnoty?')) return;
+  fetch('save_css.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ password: PASSWORD, reset: true })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      // Obnov inputy na defaulty
+      Object.keys(DEFAULTS).forEach(function(k) {
+        if (k === 'fontSize') {
+          document.getElementById('r-fs').value = DEFAULTS[k];
+          document.getElementById('v-fs').textContent = DEFAULTS[k] + 'px';
+        } else {
+          document.getElementById('c-' + k).value = DEFAULTS[k];
+          document.getElementById('t-' + k).value = DEFAULTS[k];
+        }
+      });
+      updatePreview();
+      var msg = document.getElementById('status-msg');
+      msg.textContent = '✓ Štýly resetované na predvolené.';
+      msg.className = 'ok';
+      setTimeout(function() { msg.textContent = ''; }, 4000);
+    }
+  });
+}
+
+// Init preview on load
+updatePreview();
+</script>
+</body>
+</html>
