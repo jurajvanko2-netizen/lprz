@@ -6,7 +6,7 @@
 <title>LIPOREZ Admin — Správa štýlov</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Arial, sans-serif; background: #1A0C04; color: #F0DEC0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  body { font-family: Arial, sans-serif; background: #1A0C04; color: #F0DEC0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 32px 16px; }
 
   /* LOGIN */
   #login-screen {
@@ -33,9 +33,9 @@
   .btn-login:hover { background: #9A6A40; }
 
   /* ADMIN PANEL */
-  #admin-panel { display: none; width: 100%; max-width: 760px; padding: 32px 24px; }
-  .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
-  .admin-header h1 { font-size: 22px; letter-spacing: 3px; color: #F0DEC0; }
+  #admin-panel { display: none; width: 100%; max-width: 820px; }
+  .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+  .admin-header h1 { font-size: 20px; letter-spacing: 3px; color: #F0DEC0; }
   .admin-header a { font-size: 13px; color: #7A5A3A; text-decoration: none; border: 1px solid #5A3010; padding: 6px 14px; border-radius: 5px; }
   .admin-header a:hover { color: #C4A882; border-color: #9A6A40; }
 
@@ -43,59 +43,53 @@
     background: #0D0600;
     border: 1px solid #3A1A08;
     border-radius: 10px;
-    padding: 28px 32px;
-    margin-bottom: 20px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
   }
-  .card h2 { font-size: 15px; letter-spacing: 1.5px; text-transform: uppercase; color: #B8864E; margin-bottom: 22px; }
+  .card h2 { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #B8864E; margin-bottom: 20px; border-bottom: 1px solid #2A1208; padding-bottom: 10px; }
 
-  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 32px; }
-  .field { display: flex; flex-direction: column; gap: 8px; }
-  .field label { font-size: 13px; color: #9A7A5A; letter-spacing: 0.5px; }
-  .field-color { display: flex; align-items: center; gap: 10px; }
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 28px; }
+  .field-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field label { font-size: 12px; color: #9A7A5A; letter-spacing: 0.3px; }
+  .field-color { display: flex; align-items: center; gap: 8px; }
   .field-color input[type="color"] {
-    width: 44px; height: 36px; padding: 2px; border: 1px solid #5A3010;
-    border-radius: 5px; background: #180A02; cursor: pointer;
+    width: 40px; height: 34px; padding: 2px; border: 1px solid #5A3010;
+    border-radius: 5px; background: #180A02; cursor: pointer; flex-shrink: 0;
   }
   .field-color input[type="text"] {
-    flex: 1; padding: 8px 12px; background: #180A02; border: 1px solid #5A3010;
-    border-radius: 5px; color: #F0DEC0; font-size: 14px; font-family: monospace; outline: none;
+    flex: 1; padding: 7px 10px; background: #180A02; border: 1px solid #5A3010;
+    border-radius: 5px; color: #F0DEC0; font-size: 13px; font-family: monospace; outline: none;
   }
   .field-color input[type="text"]:focus { border-color: #B8864E; }
 
   .field-range { display: flex; align-items: center; gap: 12px; }
   .field-range input[type="range"] { flex: 1; accent-color: #B8864E; }
-  .field-range .range-val {
-    font-size: 14px; font-family: monospace; color: #F0DEC0;
+  .range-val {
+    font-size: 13px; font-family: monospace; color: #F0DEC0;
     background: #180A02; border: 1px solid #5A3010; border-radius: 5px;
-    padding: 6px 10px; min-width: 52px; text-align: center;
+    padding: 5px 9px; min-width: 48px; text-align: center;
   }
 
-  .preview-bar {
-    margin-top: 22px;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #3A1A08;
+  /* PREVIEW */
+  .preview-wrap { margin-top: 18px; }
+  .preview-label { font-size: 11px; color: #5A3A20; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .preview-light {
+    padding: 14px 16px; border-radius: 6px; font-size: 14px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
   }
-  .preview-section {
-    padding: 14px 18px;
-    font-size: 14px;
-    display: flex; align-items: center; gap: 14px;
+  .preview-dark {
+    padding: 14px 16px; border-radius: 6px; font-size: 14px; margin-top: 8px;
   }
-  .preview-card {
-    display: inline-block;
-    padding: 6px 14px;
-    border-radius: 4px;
-    font-size: 13px;
+  .preview-cred {
+    display: inline-flex; flex-direction: column; gap: 3px;
+    padding: 10px 14px; border-radius: 6px; border-width: 2px; border-style: solid;
+    font-size: 13px; margin-top: 8px; max-width: 220px;
   }
-  .preview-btn {
-    display: inline-block;
-    padding: 7px 16px;
-    border-radius: 4px;
-    font-size: 13px;
-    color: #F0DEC0;
-  }
+  .preview-card-border { display: inline-block; padding: 6px 12px; border-radius: 4px; border: 1px solid; font-size: 13px; }
+  .preview-btn { display: inline-block; padding: 7px 14px; border-radius: 4px; font-size: 13px; color: #F0DEC0; }
 
-  .actions { display: flex; gap: 12px; margin-top: 24px; }
+  .actions { display: flex; gap: 12px; margin-top: 20px; }
   .btn-save {
     flex: 1; padding: 13px; background: #7C5230; color: #F0DEC0; border: none;
     border-radius: 6px; font-size: 15px; cursor: pointer; transition: background 0.2s;
@@ -103,12 +97,12 @@
   .btn-save:hover { background: #9A6A40; }
   .btn-save:disabled { opacity: 0.5; cursor: default; }
   .btn-reset {
-    padding: 13px 24px; background: transparent; color: #9A7A5A; border: 1px solid #5A3010;
+    padding: 13px 22px; background: transparent; color: #9A7A5A; border: 1px solid #5A3010;
     border-radius: 6px; font-size: 15px; cursor: pointer; transition: border-color 0.2s, color 0.2s;
   }
   .btn-reset:hover { border-color: #9A6A40; color: #C4A882; }
 
-  #status-msg { margin-top: 14px; font-size: 14px; text-align: center; min-height: 20px; }
+  #status-msg { margin-top: 12px; font-size: 14px; text-align: center; min-height: 20px; }
   #status-msg.ok { color: #7ABF7A; }
   #status-msg.err { color: #D46050; }
 </style>
@@ -128,21 +122,20 @@
 <div id="admin-panel">
   <div class="admin-header">
     <h1>LIPOREZ · Správa štýlov</h1>
-    <a href="index.html" target="_blank">Otvoriť stránku →</a>
+    <a href="index.php" target="_blank">Otvoriť stránku →</a>
   </div>
 
+  <!-- SVETLÉ SEKCIE -->
   <div class="card">
-    <h2>Farby</h2>
+    <h2>Svetlé sekcie (Galéria, Kontakt…)</h2>
     <div class="field-grid">
-
       <div class="field">
-        <label>Pozadie stránky (svetlé sekcie)</label>
+        <label>Pozadie — svetlé sekcie</label>
         <div class="field-color">
           <input type="color" id="c-bg" value="#F5EDE0" oninput="syncColor('bg')">
           <input type="text" id="t-bg" value="#F5EDE0" oninput="syncText('bg')" maxlength="7">
         </div>
       </div>
-
       <div class="field">
         <label>Pozadie — krémové sekcie</label>
         <div class="field-color">
@@ -150,23 +143,20 @@
           <input type="text" id="t-bg2" value="#EDE0CE" oninput="syncText('bg2')" maxlength="7">
         </div>
       </div>
-
       <div class="field">
-        <label>Farba textu</label>
+        <label>Farba textu (svetlé sekcie)</label>
         <div class="field-color">
           <input type="color" id="c-text" value="#1A0C04" oninput="syncColor('text')">
           <input type="text" id="t-text" value="#1A0C04" oninput="syncText('text')" maxlength="7">
         </div>
       </div>
-
       <div class="field">
-        <label>Okraje rámov (galéria / karty)</label>
+        <label>Farba okrajov rámov / kariet</label>
         <div class="field-color">
           <input type="color" id="c-border" value="#DDD0B8" oninput="syncColor('border')">
           <input type="text" id="t-border" value="#DDD0B8" oninput="syncText('border')" maxlength="7">
         </div>
       </div>
-
       <div class="field">
         <label>Akcentová farba (tlačidlá, links)</label>
         <div class="field-color">
@@ -174,34 +164,98 @@
           <input type="text" id="t-accent" value="#7C5230" oninput="syncText('accent')" maxlength="7">
         </div>
       </div>
-
-      <div class="field">
-        <label>Pozadie tmavých sekcií (O mne)</label>
-        <div class="field-color">
-          <input type="color" id="c-bgDark" value="#0D0600" oninput="syncColor('bgDark')">
-          <input type="text" id="t-bgDark" value="#0D0600" oninput="syncText('bgDark')" maxlength="7">
-        </div>
-      </div>
-
     </div>
-
-    <!-- LIVE PREVIEW -->
-    <div class="preview-bar" id="preview-bar">
-      <div class="preview-section" id="prev-light">
-        <span id="prev-text-sample">Ukážka textu — rezbárstvo a stolárstvo</span>
-        <span class="preview-card" id="prev-card">Rámček karty</span>
+    <div class="preview-wrap">
+      <div class="preview-label">Náhľad</div>
+      <div class="preview-light" id="prev-light">
+        <span id="prev-text-sample">Ukážka textu — rezbárstvo</span>
+        <span class="preview-card-border" id="prev-card">Rámček karty</span>
         <span class="preview-btn" id="prev-btn">Tlačidlo</span>
-      </div>
-      <div class="preview-section" id="prev-cream">
-        <span style="font-size:13px; color:#7A5A3A;">Krémová sekcia</span>
       </div>
     </div>
   </div>
 
+  <!-- TMAVÁ SEKCIA O MNE -->
+  <div class="card">
+    <h2>Tmavá sekcia — "Rezbár a stolár s viac ako 30 rokmi skúseností"</h2>
+    <div class="field-grid">
+      <div class="field">
+        <label>Pozadie sekcie</label>
+        <div class="field-color">
+          <input type="color" id="c-bgDark" value="#2A1608" oninput="syncColor('bgDark')">
+          <input type="text" id="t-bgDark" value="#2A1608" oninput="syncText('bgDark')" maxlength="7">
+        </div>
+      </div>
+      <div class="field">
+        <label>Farba textu (odseky)</label>
+        <div class="field-color">
+          <input type="color" id="c-textDark" value="#C4A882" oninput="syncColor('textDark')">
+          <input type="text" id="t-textDark" value="#C4A882" oninput="syncText('textDark')" maxlength="7">
+        </div>
+      </div>
+    </div>
+    <div class="preview-wrap">
+      <div class="preview-label">Náhľad</div>
+      <div class="preview-dark" id="prev-dark">
+        <span id="prev-dark-text">Vyrábam takmer zo všetkých druhov dreva…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KARTIČKY (Czech-ART, Bratislavský hrad…) -->
+  <div class="card">
+    <h2>Kartičky — Czech-ART Festival, Bratislavský hrad…</h2>
+    <div class="field-grid cols3">
+      <div class="field">
+        <label>Pozadie kartičky</label>
+        <div class="field-color">
+          <input type="color" id="c-credBg" value="#2d1810" oninput="syncColor('credBg')">
+          <input type="text" id="t-credBg" value="#2d1810" oninput="syncText('credBg')" maxlength="7">
+        </div>
+      </div>
+      <div class="field">
+        <label>Okraj kartičky</label>
+        <div class="field-color">
+          <input type="color" id="c-credBorder" value="#B8864E" oninput="syncColor('credBorder')">
+          <input type="text" id="t-credBorder" value="#B8864E" oninput="syncText('credBorder')" maxlength="7">
+        </div>
+      </div>
+      <div class="field">
+        <label>Farba nadpisu kartičky</label>
+        <div class="field-color">
+          <input type="color" id="c-credTitle" value="#F0C87A" oninput="syncColor('credTitle')">
+          <input type="text" id="t-credTitle" value="#F0C87A" oninput="syncText('credTitle')" maxlength="7">
+        </div>
+      </div>
+      <div class="field">
+        <label>Farba textu kartičky</label>
+        <div class="field-color">
+          <input type="color" id="c-credText" value="#9A7A5A" oninput="syncColor('credText')">
+          <input type="text" id="t-credText" value="#9A7A5A" oninput="syncText('credText')" maxlength="7">
+        </div>
+      </div>
+      <div class="field" style="grid-column: span 2;">
+        <label>Veľkosť textu kartičky</label>
+        <div class="field-range">
+          <input type="range" id="r-credFs" min="11" max="22" value="15" oninput="updateCredFontSize()">
+          <span class="range-val" id="v-credFs">15px</span>
+        </div>
+      </div>
+    </div>
+    <div class="preview-wrap">
+      <div class="preview-label">Náhľad</div>
+      <div class="preview-cred" id="prev-cred">
+        <span id="prev-cred-title" style="font-weight:bold; font-size:14px;">Czech-ART Festival 2011</span>
+        <span id="prev-cred-text">Cena organizátora Drevo-Sochy, České Budejovice</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPOGRAFIA -->
   <div class="card">
     <h2>Typografia</h2>
     <div class="field">
-      <label>Veľkosť základného písma</label>
+      <label>Veľkosť základného písma (celá stránka)</label>
       <div class="field-range">
         <input type="range" id="r-fs" min="14" max="32" value="22" oninput="updateFontSize()">
         <span class="range-val" id="v-fs">22px</span>
@@ -219,8 +273,11 @@
 <script>
 var PASSWORD = '';
 var DEFAULTS = {
-  bg: '#F5EDE0', bg2: '#EDE0CE', bgDark: '#0D0600',
-  text: '#1A0C04', border: '#DDD0B8', accent: '#7C5230', fontSize: 22
+  bg: '#F5EDE0', bg2: '#EDE0CE', bgDark: '#2A1608',
+  text: '#1A0C04', border: '#DDD0B8', accent: '#7C5230',
+  textDark: '#C4A882',
+  credBg: '#2d1810', credBorder: '#B8864E', credTitle: '#F0C87A', credText: '#9A7A5A',
+  fontSize: 22, credFontSize: 15
 };
 
 function doLogin() {
@@ -244,9 +301,9 @@ function loadCurrentVars() {
     .catch(function() { return {}; })
     .then(function(v) {
       if (!v || !Object.keys(v).length) return;
-      var keys = ['bg','bg2','bgDark','text','border','accent'];
-      keys.forEach(function(k) {
-        if (v[k]) {
+      var colorKeys = ['bg','bg2','bgDark','text','border','accent','textDark','credBg','credBorder','credTitle','credText'];
+      colorKeys.forEach(function(k) {
+        if (v[k] && document.getElementById('c-' + k)) {
           document.getElementById('c-' + k).value = v[k];
           document.getElementById('t-' + k).value = v[k];
         }
@@ -254,6 +311,10 @@ function loadCurrentVars() {
       if (v.fontSize) {
         document.getElementById('r-fs').value = v.fontSize;
         document.getElementById('v-fs').textContent = v.fontSize + 'px';
+      }
+      if (v.credFontSize) {
+        document.getElementById('r-credFs').value = v.credFontSize;
+        document.getElementById('v-credFs').textContent = v.credFontSize + 'px';
       }
       updatePreview();
     });
@@ -272,40 +333,54 @@ function syncText(key) {
   }
 }
 function updateFontSize() {
-  var v = document.getElementById('r-fs').value;
-  document.getElementById('v-fs').textContent = v + 'px';
+  document.getElementById('v-fs').textContent = document.getElementById('r-fs').value + 'px';
 }
+function updateCredFontSize() {
+  var v = document.getElementById('r-credFs').value;
+  document.getElementById('v-credFs').textContent = v + 'px';
+  document.getElementById('prev-cred-text').style.fontSize = v + 'px';
+}
+
+function g(id) { return document.getElementById(id); }
 
 function getValues() {
   return {
-    bg: document.getElementById('t-bg').value,
-    bg2: document.getElementById('t-bg2').value,
-    bgDark: document.getElementById('t-bgDark').value,
-    text: document.getElementById('t-text').value,
-    border: document.getElementById('t-border').value,
-    accent: document.getElementById('t-accent').value,
-    fontSize: parseInt(document.getElementById('r-fs').value)
+    bg: g('t-bg').value, bg2: g('t-bg2').value, bgDark: g('t-bgDark').value,
+    text: g('t-text').value, border: g('t-border').value, accent: g('t-accent').value,
+    textDark: g('t-textDark').value,
+    credBg: g('t-credBg').value, credBorder: g('t-credBorder').value,
+    credTitle: g('t-credTitle').value, credText: g('t-credText').value,
+    fontSize: parseInt(g('r-fs').value),
+    credFontSize: parseInt(g('r-credFs').value)
   };
 }
 
 function updatePreview() {
   var v = getValues();
-  var light = document.getElementById('prev-light');
-  var cream = document.getElementById('prev-cream');
-  light.style.background = v.bg;
-  light.style.color = v.text;
-  cream.style.background = v.bg2;
-  var card = document.getElementById('prev-card');
-  card.style.border = '1px solid ' + v.border;
-  card.style.color = v.text;
-  var btn = document.getElementById('prev-btn');
-  btn.style.background = v.accent;
+
+  // Svetlá sekcia
+  g('prev-light').style.background = v.bg;
+  g('prev-light').style.color = v.text;
+  g('prev-card').style.borderColor = v.border;
+  g('prev-card').style.color = v.text;
+  g('prev-btn').style.background = v.accent;
+
+  // Tmavá sekcia
+  g('prev-dark').style.background = v.bgDark;
+  g('prev-dark-text').style.color = v.textDark;
+
+  // Kartičky
+  g('prev-cred').style.background = v.credBg;
+  g('prev-cred').style.borderColor = v.credBorder;
+  g('prev-cred-title').style.color = v.credTitle;
+  g('prev-cred-text').style.color = v.credText;
+  g('prev-cred-text').style.fontSize = v.credFontSize + 'px';
 }
 
 function saveStyles() {
   var v = getValues();
   v.password = PASSWORD;
-  var btn = document.getElementById('btn-save');
+  var btn = g('btn-save');
   btn.disabled = true;
   btn.textContent = 'Ukladám…';
   fetch('save_css.php', {
@@ -317,7 +392,7 @@ function saveStyles() {
   .then(function(data) {
     btn.disabled = false;
     btn.textContent = 'Uložiť zmeny';
-    var msg = document.getElementById('status-msg');
+    var msg = g('status-msg');
     if (data.ok) {
       msg.textContent = '✓ Zmeny uložené — stránka je aktualizovaná.';
       msg.className = 'ok';
@@ -330,7 +405,7 @@ function saveStyles() {
   .catch(function() {
     btn.disabled = false;
     btn.textContent = 'Uložiť zmeny';
-    var msg = document.getElementById('status-msg');
+    var msg = g('status-msg');
     msg.textContent = '✕ Chyba siete — skúste znova.';
     msg.className = 'err';
   });
@@ -346,18 +421,19 @@ function resetStyles() {
   .then(function(r) { return r.json(); })
   .then(function(data) {
     if (data.ok) {
-      // Obnov inputy na defaulty
-      Object.keys(DEFAULTS).forEach(function(k) {
-        if (k === 'fontSize') {
-          document.getElementById('r-fs').value = DEFAULTS[k];
-          document.getElementById('v-fs').textContent = DEFAULTS[k] + 'px';
-        } else {
-          document.getElementById('c-' + k).value = DEFAULTS[k];
-          document.getElementById('t-' + k).value = DEFAULTS[k];
+      var colorKeys = ['bg','bg2','bgDark','text','border','accent','textDark','credBg','credBorder','credTitle','credText'];
+      colorKeys.forEach(function(k) {
+        if (DEFAULTS[k]) {
+          g('c-' + k).value = DEFAULTS[k];
+          g('t-' + k).value = DEFAULTS[k];
         }
       });
+      g('r-fs').value = DEFAULTS.fontSize;
+      g('v-fs').textContent = DEFAULTS.fontSize + 'px';
+      g('r-credFs').value = DEFAULTS.credFontSize;
+      g('v-credFs').textContent = DEFAULTS.credFontSize + 'px';
       updatePreview();
-      var msg = document.getElementById('status-msg');
+      var msg = g('status-msg');
       msg.textContent = '✓ Štýly resetované na predvolené.';
       msg.className = 'ok';
       setTimeout(function() { msg.textContent = ''; }, 4000);
@@ -365,7 +441,6 @@ function resetStyles() {
   });
 }
 
-// Init preview on load
 updatePreview();
 </script>
 </body>
