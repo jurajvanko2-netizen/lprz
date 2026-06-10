@@ -10,6 +10,117 @@ if (!isset($_SESSION['site_access'])) {
     exit;
 }
 
+// ── CUSTOM TEXTS ─────────────────────────────────────────────────────────────
+$customTexts = [];
+$ctFile = __DIR__ . '/custom_texts.json';
+if (file_exists($ctFile)) {
+    $ct = json_decode(file_get_contents($ctFile), true);
+    if (is_array($ct)) $customTexts = $ct;
+}
+$DTXT = [
+    // Header
+    'logo_name'            => 'LIPOREZ',
+    'logo_tagline'         => 'Rezbárstvo & Stolárstvo od 1995',
+    'nav_vyroba'           => 'Výroba',
+    'nav_galeria'          => 'Galéria',
+    'nav_omne'             => 'O mne',
+    'nav_kontakt'          => 'Kontakt',
+    // Hero
+    'hero_h1'              => "Precíznosť,<br>ktorú <em>vidieť</em><br>v každom reze",
+    'hero_desc'            => 'Vyrábam a vyrezávam na zákazku kompletné nábytkárske výrobky, rezbárske fragmenty, sakrálne predmety, hudobné nástroje i poľovnícke štítky. Začisťujem bez brúsneho papiera.',
+    'hero_btn1'            => 'Pozrieť výrobky',
+    'hero_btn2'            => 'Kontaktovať',
+    // Štatistiky
+    'stat1_num'            => '30+',
+    'stat1_label'          => 'rokov tradície',
+    'stat2_num'            => '8',
+    'stat2_label'          => 'krajín sveta',
+    'stat3_num'            => '100%',
+    'stat3_label'          => 'ručná práca',
+    'stat4_num'            => '0',
+    'stat4_label'          => 'brúsny papier',
+    // Oblasti tvorby
+    'vyroba_eyebrow'       => 'Čo robím',
+    'vyroba_h2'            => 'Oblasti tvorby',
+    'vyroba_sub'           => 'Každý výrobok je originál. Pracujem takmer so všetkými druhmi dreva, podľa priania zákazníka.',
+    'cat_sakralne_title'   => 'Sakrálne predmety',
+    'cat_sakralne_sub'     => 'Kríže, relikvie, oltárne rezby',
+    'cat_hudba_title'      => 'Hudobné nástroje',
+    'cat_hudba_sub'        => 'Cimbal, husle, zdobenie nástrojov',
+    'cat_polovnicke_title' => 'Poľovnícke',
+    'cat_polovnicke_sub'   => 'Štítky, pažby, trofeje',
+    'cat_nabytok_title'    => 'Nábytok',
+    'cat_nabytok_sub'      => 'Kuchynské linky, schodiská, kópie',
+    'cat_doplnky_title'    => 'Doplnky & sochy',
+    'cat_doplnky_sub'      => 'Dekorácie, figúry, darčeky',
+    // Galéria — popisky kategórií
+    'gal_sakralne_h3'      => 'Sakrálne predmety',
+    'gal_sakralne_p'       => 'Kríže, svätostánky, relikvie a oltárne rezby. Precízna práca pre kostoly, kaplnky i súkromných zberateľov. Reštaurovanie historických sakrálnych predmetov.',
+    'gal_hudba_h3'         => 'Rezby na hudobné nástroje',
+    'gal_hudba_p'          => 'Zdobím cimbaly, husle a iné ľudové nástroje. Na fotografiách rezby na cimbal HOLÁK majstra Vladimíra Holiša z Kozlovíc pre ľudovú hudbu Rosenka z Košarísk.',
+    'gal_polovnicke_h3'    => 'Poľovnícke výrobky',
+    'gal_polovnicke_p'     => 'Trofejné poľovnícke štítky, úprava a zdobenie pažieb strelných zbraní, parohy. Aj sochy s poľovníckou tematikou — Diana bohyňa lovu (výška 70 cm).',
+    'gal_nabytok_h3'       => 'Nábytok & interiér',
+    'gal_nabytok_p'        => 'Kuchynské linky, schodiská, historické kópie nábytku. Reštaurovanie starožitného nábytku a výroba luxusných nábytkov na mieru. Povrchovú úpravu robím nemeckými a talianskými lakmi či olejmi.',
+    'gal_doplnky_h3'       => 'Doplnky & sochy',
+    'gal_doplnky_p'        => 'Dekoratívne predmety, figúry a sochy v životnej veľkosti, darčeky na objednávku. Každý kus je unikátny — sústruženie dreva, reliéfy, trojrozmerné rezby.',
+    // O mne
+    'omne_eyebrow'         => 'Remeselník',
+    'omne_h2'              => 'Rezbár a stolár s viac ako 30 rokmi skúseností',
+    'omne_p1'              => 'Rezbárčine som sa venoval v Strednom odbornom učilišti drevárskom v Oradei (rumunskom Varadíne). Po presťahovaní z Rumunska na Slovensko v roku 1990 som pôsobil vo Zvolene — Bučine, neskôr v umeleckom rezbárstve špecializovanom na luxusné nábytky v Dubnici nad Váhom.',
+    'omne_p2'              => 'Vyrábam takmer zo všetkých druhov dreva. Začisťovanie vykonávam bez použitia brúsneho papiera. Kvalitná povrchová úprava nemeckými a talianskými lakmi či olejmi, podľa priania zákazníka.',
+    'omne_countries_intro' => 'Moje výrobky sa nachádzajú v:',
+    'omne_country1'        => 'Česká republika',
+    'omne_country2'        => 'Rakúsko',
+    'omne_country3'        => 'Nemecko',
+    'omne_country4'        => 'Francúzsko',
+    'omne_country5'        => 'Anglicko',
+    'omne_country6'        => 'USA',
+    'omne_country7'        => 'Rumunsko',
+    'cred1_title'          => 'Czech-ART Festival 2011',
+    'cred1_text'           => 'Cena organizátora Drevo-Sochy, České Budejovice',
+    'cred2_title'          => 'Bratislavský hrad',
+    'cred2_text'           => 'Rám na obraz Márie Terézie na zrekonštrukovanom hrade',
+    'cred3_title'          => 'Všetky druhy dreva',
+    'cred3_text'           => 'Dub, orech, lipa, buk, čerešňa, agát a ďalšie',
+    'cred4_title'          => 'Od roku 1995',
+    'cred4_text'           => 'Kvalita a serióznosť je moje krédo',
+    'feat1'                => 'Čistota rezu — začisťovanie bez brúsneho papiera',
+    'feat2'                => 'Nemecké a talianske laky a oleje',
+    'feat3'                => 'Reštaurovanie starožitného nábytku',
+    'feat4'                => 'Kópie historických rezieb a nábytkov',
+    'feat5'                => 'Zdobenie hudobných nástrojov',
+    'feat6'                => 'Úprava pažieb strelných zbraní',
+    // Kontakt
+    'kontakt_eyebrow'      => 'Kde ma nájdete',
+    'kontakt_h2'           => 'Kontakt',
+    'kontakt_sub'          => 'Napíšte alebo zavolajte — rád sa dohovorím na individuálnej zákazke.',
+    'kontakt_adresa'       => "Malé Košecké Podhradie, Háj č. 251\n018 31 Košecké Podhradie",
+    'kontakt_tel'          => '+421 905 815 775',
+    'kontakt_tel_href'     => '+421905815775',
+    'kontakt_email'        => 'liporez@centrum.sk',
+    'kontakt_ico'          => '47359021 / 2023831326',
+    // Footer
+    'footer_copy'          => 'Štefan Polacsek — LIPOREZ · IČO: 47359021',
+    'footer_logo'          => 'LIPOREZ',
+];
+// T($key)   — HTML-escaped text (pre atribúty a text v tagoch)
+// TH($key)  — raw HTML (iba pre hero_h1 obsahujúci <br>/<em>)
+// TX($key)  — raw hodnota (do PHP premenných, kde escaping príde neskôr)
+function T(string $key): string {
+    global $customTexts, $DTXT;
+    return htmlspecialchars($customTexts[$key] ?? $DTXT[$key] ?? '', ENT_QUOTES|ENT_HTML5, 'UTF-8');
+}
+function TH(string $key): string {
+    global $customTexts, $DTXT;
+    return $customTexts[$key] ?? $DTXT[$key] ?? '';
+}
+function TX(string $key): string {
+    global $customTexts, $DTXT;
+    return $customTexts[$key] ?? $DTXT[$key] ?? '';
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 function getGalleryImages(string $category): array {
     $dir = __DIR__ . '/img/' . $category . '/';
     if (!is_dir($dir)) return [];
@@ -471,28 +582,26 @@ function galleryItems(array $images, string $caption): string {
       <text x="0" y="52" font-family="Arial" font-size="6" fill="#5A3010" text-anchor="middle" letter-spacing="3">EST. 1995</text>
     </svg>
     <div>
-      <span class="logo-name">LIPOREZ</span>
-      <span class="logo-tagline">Rezbárstvo &amp; Stolárstvo od 1995</span>
+      <span class="logo-name"><?= T('logo_name') ?></span>
+      <span class="logo-tagline"><?= T('logo_tagline') ?></span>
     </div>
   </a>
   <nav>
-    <a href="#vyroba">Výroba</a>
-    <a href="#galeria">Galéria</a>
-    <a href="#omne">O mne</a>
-    <a href="#kontakt" class="nav-cta">Kontakt</a>
+    <a href="#vyroba"><?= T('nav_vyroba') ?></a>
+    <a href="#galeria"><?= T('nav_galeria') ?></a>
+    <a href="#omne"><?= T('nav_omne') ?></a>
+    <a href="#kontakt" class="nav-cta"><?= T('nav_kontakt') ?></a>
   </nav>
 </header>
 
 <!-- HERO -->
 <div class="hero">
   <div class="hero-text">
-    <h1>Precíznosť,<br>ktorú <em>vidieť</em><br>v každom reze</h1>
-    <p class="hero-desc">
-      Vyrábam a vyrezávam na zákazku kompletné nábytkárske výrobky, rezbárske fragmenty, sakrálne predmety, hudobné nástroje i poľovnícke štítky. Začisťujem bez brúsneho papiera.
-    </p>
+    <h1><?= TH('hero_h1') ?></h1>
+    <p class="hero-desc"><?= T('hero_desc') ?></p>
     <div class="hero-btns">
-      <a href="#vyroba" class="btn-primary">Pozrieť výrobky</a>
-      <a href="#kontakt" class="btn-outline">Kontaktovať</a>
+      <a href="#vyroba" class="btn-primary"><?= T('hero_btn1') ?></a>
+      <a href="#kontakt" class="btn-outline"><?= T('hero_btn2') ?></a>
     </div>
   </div>
   <div style="border-radius:10px; overflow:hidden; cursor:pointer; height:100%;"
@@ -504,25 +613,25 @@ function galleryItems(array $images, string $caption): string {
 
 <!-- STATS -->
 <div class="stats-bar">
-  <div class="stat"><span class="stat-num">30+</span><span class="stat-label">rokov tradície</span></div>
-  <div class="stat"><span class="stat-num">8</span><span class="stat-label">krajín sveta</span></div>
-  <div class="stat"><span class="stat-num">100%</span><span class="stat-label">ručná práca</span></div>
-  <div class="stat"><span class="stat-num">0</span><span class="stat-label">brúsny papier</span></div>
+  <div class="stat"><span class="stat-num"><?= T('stat1_num') ?></span><span class="stat-label"><?= T('stat1_label') ?></span></div>
+  <div class="stat"><span class="stat-num"><?= T('stat2_num') ?></span><span class="stat-label"><?= T('stat2_label') ?></span></div>
+  <div class="stat"><span class="stat-num"><?= T('stat3_num') ?></span><span class="stat-label"><?= T('stat3_label') ?></span></div>
+  <div class="stat"><span class="stat-num"><?= T('stat4_num') ?></span><span class="stat-label"><?= T('stat4_label') ?></span></div>
 </div>
 
 <!-- VÝROBA PREHĽAD -->
 <section id="vyroba" class="section-light">
-  <span class="section-eyebrow">Čo robím</span>
-  <h2>Oblasti tvorby</h2>
-  <p class="section-sub">Každý výrobok je originál. Pracujem takmer so všetkými druhmi dreva, podľa priania zákazníka.</p>
+  <span class="section-eyebrow"><?= T('vyroba_eyebrow') ?></span>
+  <h2><?= T('vyroba_h2') ?></h2>
+  <p class="section-sub"><?= T('vyroba_sub') ?></p>
   <div class="cat-grid">
     <?php
     $catPreviews = [
-        'sakralne'   => ['img/sakralne/sakralne1.jpg', 'img/art_4_1.jpg', 'Sakrálne predmety', 'Kríže, relikvie, oltárne rezby'],
-        'hudba'      => ['img/hudba/art_26_1.jpg',     'img/art_4_1.jpg', 'Hudobné nástroje',  'Cimbal, husle, zdobenie nástrojov'],
-        'polovnicke' => ['img/polovnicke/polovnicke1.jpg','img/art_4_1.jpg','Poľovnícke',       'Štítky, pažby, trofeje'],
-        'nabytok'    => ['img/nabytok/nabytok1.jpg',   'img/art_4_1.jpg', 'Nábytok',           'Kuchynské linky, schodiská, kópie'],
-        'doplnky'    => ['img/doplnky/doplnky10.jpg',  'img/art_4_1.jpg', 'Doplnky &amp; sochy','Dekorácie, figúry, darčeky'],
+        'sakralne'   => ['img/sakralne/sakralne1.jpg',   'img/art_4_1.jpg', TX('cat_sakralne_title'),   TX('cat_sakralne_sub')],
+        'hudba'      => ['img/hudba/art_26_1.jpg',       'img/art_4_1.jpg', TX('cat_hudba_title'),      TX('cat_hudba_sub')],
+        'polovnicke' => ['img/polovnicke/polovnicke1.jpg','img/art_4_1.jpg', TX('cat_polovnicke_title'), TX('cat_polovnicke_sub')],
+        'nabytok'    => ['img/nabytok/nabytok1.jpg',     'img/art_4_1.jpg', TX('cat_nabytok_title'),    TX('cat_nabytok_sub')],
+        'doplnky'    => ['img/doplnky/doplnky10.jpg',    'img/art_4_1.jpg', TX('cat_doplnky_title'),    TX('cat_doplnky_sub')],
     ];
     foreach ($catPreviews as $catKey => [$imgPref, $imgFallback, $title, $sub]):
         // Try to get first image from the category folder
@@ -549,22 +658,22 @@ function galleryItems(array $images, string $caption): string {
 
 <!-- O MNE -->
 <section id="omne" style="background:#2A1608; padding-top:72px; padding-bottom:72px; padding-left: max(40px, calc((100% - 1240px) / 2)); padding-right: max(40px, calc((100% - 1240px) / 2))">
-  <span class="section-eyebrow section-eyebrow-light">Remeselník</span>
+  <span class="section-eyebrow section-eyebrow-light"><?= T('omne_eyebrow') ?></span>
   <div class="about-grid">
     <!-- VĽAVO: nadpis, text -->
     <div class="about-left">
-      <h2 class="light">Rezbár a stolár s viac ako 30 rokmi skúseností</h2>
-      <p style="color:#C4A882;">Rezbárčine som sa venoval v Strednom odbornom učilišti drevárskom v Oradei (rumunskom Varadíne). Po presťahovaní z Rumunska na Slovensko v roku 1990 som pôsobil vo Zvolene — Bučine, neskôr v umeleckom rezbárstve špecializovanom na luxusné nábytky v Dubnici nad Váhom.</p>
-      <p style="color:#C4A882;">Vyrábam takmer zo všetkých druhov dreva. Začisťovanie vykonávam bez použitia brúsneho papiera. Kvalitná povrchová úprava nemeckými a talianskými lakmi či olejmi, podľa priania zákazníka.</p>
-      <p style="font-style:italic;font-size:19px;color:#B09070;margin-top:24px;margin-bottom:12px;">Moje výrobky sa nachádzajú v:</p>
+      <h2 class="light"><?= T('omne_h2') ?></h2>
+      <p style="color:#C4A882;"><?= T('omne_p1') ?></p>
+      <p style="color:#C4A882;"><?= T('omne_p2') ?></p>
+      <p style="font-style:italic;font-size:19px;color:#B09070;margin-top:24px;margin-bottom:12px;"><?= T('omne_countries_intro') ?></p>
       <div class="countries">
-        <span class="country-pill">Česká republika</span>
-        <span class="country-pill">Rakúsko</span>
-        <span class="country-pill">Nemecko</span>
-        <span class="country-pill">Francúzsko</span>
-        <span class="country-pill">Anglicko</span>
-        <span class="country-pill">USA</span>
-        <span class="country-pill">Rumunsko</span>
+        <span class="country-pill"><?= T('omne_country1') ?></span>
+        <span class="country-pill"><?= T('omne_country2') ?></span>
+        <span class="country-pill"><?= T('omne_country3') ?></span>
+        <span class="country-pill"><?= T('omne_country4') ?></span>
+        <span class="country-pill"><?= T('omne_country5') ?></span>
+        <span class="country-pill"><?= T('omne_country6') ?></span>
+        <span class="country-pill"><?= T('omne_country7') ?></span>
       </div>
     </div>
 
@@ -572,32 +681,32 @@ function galleryItems(array $images, string $caption): string {
     <div class="about-right">
       <div class="cred-grid">
         <div class="cred-card featured" style="padding:12px 14px;">
-          <div class="cred-title" style="font-size:17px;">Czech-ART Festival 2011</div>
-          <div class="cred-text" style="font-size:15px;">Cena organizátora Drevo-Sochy, České Budejovice</div>
+          <div class="cred-title" style="font-size:17px;"><?= T('cred1_title') ?></div>
+          <div class="cred-text" style="font-size:15px;"><?= T('cred1_text') ?></div>
         </div>
         <div class="cred-card featured" style="padding:12px 14px;">
-          <div class="cred-title" style="font-size:17px;">Bratislavský hrad</div>
-          <div class="cred-text" style="font-size:15px;">Rám na obraz Márie Terézie na zrekonštrukovanom hrade</div>
+          <div class="cred-title" style="font-size:17px;"><?= T('cred2_title') ?></div>
+          <div class="cred-text" style="font-size:15px;"><?= T('cred2_text') ?></div>
         </div>
         <div class="cred-card featured" style="padding:12px 14px;">
-          <div class="cred-title" style="font-size:17px;">Všetky druhy dreva</div>
-          <div class="cred-text" style="font-size:15px;">Dub, orech, lipa, buk, čerešňa, agát a ďalšie</div>
+          <div class="cred-title" style="font-size:17px;"><?= T('cred3_title') ?></div>
+          <div class="cred-text" style="font-size:15px;"><?= T('cred3_text') ?></div>
         </div>
         <div class="cred-card featured" style="padding:12px 14px;">
-          <div class="cred-title" style="font-size:17px;">Od roku 1995</div>
-          <div class="cred-text" style="font-size:15px;">Kvalita a serióznosť je moje krédo</div>
+          <div class="cred-title" style="font-size:17px;"><?= T('cred4_title') ?></div>
+          <div class="cred-text" style="font-size:15px;"><?= T('cred4_text') ?></div>
         </div>
       </div>
     </div>
 
   </div>
   <ul class="features" style="margin-top:40px; columns:2; column-gap:60px; color:#C4A882;">
-    <li>Čistota rezu — začisťovanie bez brúsneho papiera</li>
-    <li>Nemecké a talianske laky a oleje</li>
-    <li>Reštaurovanie starožitného nábytku</li>
-    <li>Kópie historických rezieb a nábytkov</li>
-    <li>Zdobenie hudobných nástrojov</li>
-    <li>Úprava pažieb strelných zbraní</li>
+    <li><?= T('feat1') ?></li>
+    <li><?= T('feat2') ?></li>
+    <li><?= T('feat3') ?></li>
+    <li><?= T('feat4') ?></li>
+    <li><?= T('feat5') ?></li>
+    <li><?= T('feat6') ?></li>
   </ul>
 </section>
 
@@ -608,8 +717,8 @@ function galleryItems(array $images, string $caption): string {
   <div class="cat-section-inner">
     <div class="cat-info">
       <span class="cat-label">⛪ Kategória</span>
-      <h3>Sakrálne predmety</h3>
-      <p>Kríže, svätostánky, relikvie a oltárne rezby. Precízna práca pre kostoly, kaplnky i súkromných zberateľov. Reštaurovanie historických sakrálnych predmetov.</p>
+      <h3><?= T('gal_sakralne_h3') ?></h3>
+      <p><?= T('gal_sakralne_p') ?></p>
     </div>
     <div class="gallery-grid">
       <?= galleryItems($sakralne, 'Sakrálna rezba') ?>
@@ -624,8 +733,8 @@ function galleryItems(array $images, string $caption): string {
   <div class="cat-section-inner">
     <div class="cat-info">
       <span class="cat-label">🎵 Kategória</span>
-      <h3>Rezby na hudobné nástroje</h3>
-      <p>Zdobím cimbaly, husle a iné ľudové nástroje. Na fotografiách rezby na cimbal HOLÁK majstra Vladimíra Holiša z Kozlovíc pre ľudovú hudbu Rosenka z Košarísk.</p>
+      <h3><?= T('gal_hudba_h3') ?></h3>
+      <p><?= T('gal_hudba_p') ?></p>
     </div>
     <div class="gallery-grid">
       <?= galleryItems($hudba, 'Hudobný nástroj — rezba') ?>
@@ -640,8 +749,8 @@ function galleryItems(array $images, string $caption): string {
   <div class="cat-section-inner">
     <div class="cat-info">
       <span class="cat-label">🦌 Kategória</span>
-      <h3>Poľovnícke výrobky</h3>
-      <p>Trofejné poľovnícke štítky, úprava a zdobenie pažieb strelných zbraní, parohy. Aj sochy s poľovníckou tematikou — Diana bohyňa lovu (výška 70 cm).</p>
+      <h3><?= T('gal_polovnicke_h3') ?></h3>
+      <p><?= T('gal_polovnicke_p') ?></p>
     </div>
     <div class="gallery-grid">
       <?= galleryItems($polovnicke, 'Poľovnícky výrobok') ?>
@@ -656,8 +765,8 @@ function galleryItems(array $images, string $caption): string {
   <div class="cat-section-inner">
     <div class="cat-info">
       <span class="cat-label">🛋 Kategória</span>
-      <h3>Nábytok &amp; interiér</h3>
-      <p>Kuchynské linky, schodiská, historické kópie nábytku. Reštaurovanie starožitného nábytku a výroba luxusných nábytkov na mieru. Povrchovú úpravu robím nemeckými a talianskými lakmi či olejmi.</p>
+      <h3><?= T('gal_nabytok_h3') ?></h3>
+      <p><?= T('gal_nabytok_p') ?></p>
     </div>
     <div class="gallery-grid">
       <?= galleryItems($nabytok, 'Nábytok') ?>
@@ -672,8 +781,8 @@ function galleryItems(array $images, string $caption): string {
   <div class="cat-section-inner">
     <div class="cat-info">
       <span class="cat-label">🎨 Kategória</span>
-      <h3>Doplnky &amp; sochy</h3>
-      <p>Dekoratívne predmety, figúry a sochy v životnej veľkosti, darčeky na objednávku. Každý kus je unikátny — sústruženie dreva, reliéfy, trojrozmerné rezby.</p>
+      <h3><?= T('gal_doplnky_h3') ?></h3>
+      <p><?= T('gal_doplnky_p') ?></p>
     </div>
     <div class="gallery-grid">
       <?= galleryItems($doplnky, 'Doplnok & socha') ?>
@@ -683,37 +792,37 @@ function galleryItems(array $images, string $caption): string {
 
 <!-- KONTAKT -->
 <section id="kontakt" class="section-light">
-  <span class="section-eyebrow">Kde ma nájdete</span>
-  <h2>Kontakt</h2>
-  <p class="section-sub">Napíšte alebo zavolajte — rád sa dohovorím na individuálnej zákazke.</p>
+  <span class="section-eyebrow"><?= T('kontakt_eyebrow') ?></span>
+  <h2><?= T('kontakt_h2') ?></h2>
+  <p class="section-sub"><?= T('kontakt_sub') ?></p>
   <div class="contact-grid">
     <div class="contact-rows">
       <div class="contact-row">
         <div class="contact-icon">📍</div>
         <div>
           <div class="contact-label">Adresa</div>
-          <div class="contact-val">Malé Košecké Podhradie, Háj č. 251<br>018 31 Košecké Podhradie</div>
+          <div class="contact-val"><?= nl2br(T('kontakt_adresa')) ?></div>
         </div>
       </div>
       <div class="contact-row">
         <div class="contact-icon">📞</div>
         <div>
           <div class="contact-label">Telefón</div>
-          <div class="contact-val"><a href="tel:+421905815775">+421 905 815 775</a></div>
+          <div class="contact-val"><a href="tel:<?= T('kontakt_tel_href') ?>"><?= T('kontakt_tel') ?></a></div>
         </div>
       </div>
       <div class="contact-row">
         <div class="contact-icon">✉</div>
         <div>
           <div class="contact-label">E-mail</div>
-          <div class="contact-val"><a href="mailto:liporez@centrum.sk">liporez@centrum.sk</a></div>
+          <div class="contact-val"><a href="mailto:<?= T('kontakt_email') ?>"><?= T('kontakt_email') ?></a></div>
         </div>
       </div>
       <div class="contact-row">
         <div class="contact-icon">🪪</div>
         <div>
           <div class="contact-label">IČO / DIČ</div>
-          <div class="contact-val">47359021 / 2023831326</div>
+          <div class="contact-val"><?= T('kontakt_ico') ?></div>
         </div>
       </div>
     </div>
@@ -729,8 +838,8 @@ function galleryItems(array $images, string $caption): string {
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-copy">© <?= date('Y') ?> Štefan Polacsek — LIPOREZ &nbsp;·&nbsp; IČO: 47359021</div>
-  <div class="footer-logo">LIPOREZ</div>
+  <div class="footer-copy">© <?= date('Y') ?> <?= T('footer_copy') ?></div>
+  <div class="footer-logo"><?= T('footer_logo') ?></div>
 </footer>
 
 <!-- LIGHTBOX -->

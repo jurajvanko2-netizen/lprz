@@ -59,6 +59,20 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 #status-msg { margin-top: 12px; font-size: 14px; text-align: center; min-height: 20px; }
 #status-msg.ok { color: #16a34a; }
 #status-msg.err { color: #dc2626; }
+
+/* TABS */
+.tab-nav { display: flex; gap: 0; margin-bottom: 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+.tab-btn { flex: 1; padding: 11px 20px; background: transparent; border: none; cursor: pointer; font-size: 14px; font-weight: 600; color: #64748b; letter-spacing: 0.3px; transition: background 0.15s, color 0.15s; }
+.tab-btn.active { background: #2563eb; color: #fff; }
+.tab-btn:hover:not(.active) { background: #f1f5f9; color: #334155; }
+
+/* TEXT INPUTS */
+.txt-input { width: 100%; padding: 7px 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; color: #1e293b; font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.15s; }
+.txt-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
+.txt-area { width: 100%; padding: 7px 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; color: #1e293b; font-size: 13px; font-family: inherit; outline: none; resize: vertical; min-height: 62px; line-height: 1.5; transition: border-color 0.15s; }
+.txt-area:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
+.txt-note { font-size: 11px; color: #94a3b8; margin-top: 3px; }
+.field-grid.cols1 { grid-template-columns: 1fr; }
 </style>
 </head>
 <body>
@@ -66,7 +80,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 <!-- LOGIN -->
 <div id="login-screen">
   <h1>LIPOREZ</h1>
-  <p>Admin — správa štýlov</p>
+  <p>Admin — správa štýlov a textov</p>
   <input type="password" id="pwd-input" placeholder="Heslo" autocomplete="current-password">
   <div id="login-error"></div>
   <button class="btn-login" onclick="doLogin()">Prihlásiť sa</button>
@@ -75,9 +89,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 <!-- ADMIN PANEL -->
 <div id="admin-panel">
   <div class="admin-header">
-    <h1>LIPOREZ · Správa štýlov</h1>
+    <h1>LIPOREZ · Admin</h1>
     <a href="index.php" target="_blank">Otvoriť stránku →</a>
   </div>
+
+  <!-- TABS -->
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tab-btn-styles" onclick="switchTab('styles')">🎨 Štýly</button>
+    <button class="tab-btn" id="tab-btn-texts" onclick="switchTab('texts')">✏️ Texty</button>
+  </div>
+
+  <!-- TAB: ŠTÝLY -->
+  <div id="tab-styles">
 
   <!-- 1. NADPISY -->
   <div class="card">
@@ -395,6 +418,210 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
     <button class="btn-reset" onclick="resetStyles()">Reset na predvolené</button>
   </div>
   <div id="status-msg"></div>
+
+  </div><!-- /tab-styles -->
+
+  <!-- TAB: TEXTY -->
+  <div id="tab-texts" style="display:none;">
+
+  <!-- T1. HEADER & NAVIGÁCIA -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Header &amp; Navigácia</span>
+      <span class="card-loc">— logo, menu položky</span>
+    </div>
+    <div class="card-desc">Logo nápis, podnadpis pod logom a texty navigačných odkazov v hlavičke stránky.</div>
+    <div class="field-grid">
+      <div class="field"><label>Logo — hlavný nápis</label><input type="text" class="txt-input" data-key="logo_name" placeholder="LIPOREZ"></div>
+      <div class="field"><label>Logo — podnadpis</label><input type="text" class="txt-input" data-key="logo_tagline" placeholder="Rezbárstvo & Stolárstvo od 1995"></div>
+      <div class="field"><label>Nav: Výroba</label><input type="text" class="txt-input" data-key="nav_vyroba" placeholder="Výroba"></div>
+      <div class="field"><label>Nav: Galéria</label><input type="text" class="txt-input" data-key="nav_galeria" placeholder="Galéria"></div>
+      <div class="field"><label>Nav: O mne</label><input type="text" class="txt-input" data-key="nav_omne" placeholder="O mne"></div>
+      <div class="field"><label>Nav: Kontakt (tlačidlo)</label><input type="text" class="txt-input" data-key="nav_kontakt" placeholder="Kontakt"></div>
+    </div>
+  </div>
+
+  <!-- T2. HERO SEKCIA -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Hero sekcia</span>
+      <span class="card-loc">— úvodný banner, veľký nadpis</span>
+    </div>
+    <div class="card-desc">Veľký nadpis na tmavom pozadí, popis pod ním a texty dvoch tlačidiel.</div>
+    <div class="field-grid cols1">
+      <div class="field">
+        <label>Veľký nadpis (H1) — povolené &lt;br&gt; a &lt;em&gt;text&lt;/em&gt;</label>
+        <textarea class="txt-area" data-key="hero_h1" rows="3" placeholder="Precíznosť,&#10;ktorú &lt;em&gt;vidieť&lt;/em&gt;&#10;v každom reze"></textarea>
+        <div class="txt-note">Nový riadok = &lt;br&gt;. Kurzíva = &lt;em&gt;slovo&lt;/em&gt;. Príklad: Precíznosť,&lt;br&gt;ktorú &lt;em&gt;vidieť&lt;/em&gt;&lt;br&gt;v každom reze</div>
+      </div>
+      <div class="field">
+        <label>Popis pod nadpisom</label>
+        <textarea class="txt-area" data-key="hero_desc" rows="3"></textarea>
+      </div>
+    </div>
+    <div class="field-grid" style="margin-top:14px;">
+      <div class="field"><label>Tlačidlo 1 (hnedé)</label><input type="text" class="txt-input" data-key="hero_btn1" placeholder="Pozrieť výrobky"></div>
+      <div class="field"><label>Tlačidlo 2 (obrysové)</label><input type="text" class="txt-input" data-key="hero_btn2" placeholder="Kontaktovať"></div>
+    </div>
+  </div>
+
+  <!-- T3. ŠTATISTIKY -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Štatistiky</span>
+      <span class="card-loc">— 4 čísla pod hero sekciou</span>
+    </div>
+    <div class="card-desc">Tmavý pruh pod hlavným bannerom so 4 číslami/faktami. Každá štatistika má číslo a popis.</div>
+    <div class="field-grid cols3">
+      <div class="field"><label>Štat 1 — číslo</label><input type="text" class="txt-input" data-key="stat1_num" placeholder="30+"></div>
+      <div class="field"><label>Štat 1 — popis</label><input type="text" class="txt-input" data-key="stat1_label" placeholder="rokov tradície"></div>
+      <div class="field" style="grid-column:span 1;"></div>
+      <div class="field"><label>Štat 2 — číslo</label><input type="text" class="txt-input" data-key="stat2_num" placeholder="8"></div>
+      <div class="field"><label>Štat 2 — popis</label><input type="text" class="txt-input" data-key="stat2_label" placeholder="krajín sveta"></div>
+      <div class="field" style="grid-column:span 1;"></div>
+      <div class="field"><label>Štat 3 — číslo</label><input type="text" class="txt-input" data-key="stat3_num" placeholder="100%"></div>
+      <div class="field"><label>Štat 3 — popis</label><input type="text" class="txt-input" data-key="stat3_label" placeholder="ručná práca"></div>
+      <div class="field" style="grid-column:span 1;"></div>
+      <div class="field"><label>Štat 4 — číslo</label><input type="text" class="txt-input" data-key="stat4_num" placeholder="0"></div>
+      <div class="field"><label>Štat 4 — popis</label><input type="text" class="txt-input" data-key="stat4_label" placeholder="brúsny papier"></div>
+    </div>
+  </div>
+
+  <!-- T4. OBLASTI TVORBY -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Oblasti tvorby</span>
+      <span class="card-loc">— sekcia s kartami kategórií</span>
+    </div>
+    <div class="card-desc">Nadpis sekcie, popis a 5 kariet kategórií (každá má názov + podnadpis).</div>
+    <div class="field-grid">
+      <div class="field"><label>Eyebrow (malý text nad nadpisom)</label><input type="text" class="txt-input" data-key="vyroba_eyebrow" placeholder="Čo robím"></div>
+      <div class="field"><label>Nadpis sekcie (H2)</label><input type="text" class="txt-input" data-key="vyroba_h2" placeholder="Oblasti tvorby"></div>
+    </div>
+    <div class="field-grid cols1" style="margin-top:10px;">
+      <div class="field"><label>Popis sekcie</label><textarea class="txt-area" data-key="vyroba_sub" rows="2"></textarea></div>
+    </div>
+    <div class="field-grid" style="margin-top:14px;">
+      <div class="field"><label>Sakrálne — názov</label><input type="text" class="txt-input" data-key="cat_sakralne_title"></div>
+      <div class="field"><label>Sakrálne — podnadpis</label><input type="text" class="txt-input" data-key="cat_sakralne_sub"></div>
+      <div class="field"><label>Hudobné — názov</label><input type="text" class="txt-input" data-key="cat_hudba_title"></div>
+      <div class="field"><label>Hudobné — podnadpis</label><input type="text" class="txt-input" data-key="cat_hudba_sub"></div>
+      <div class="field"><label>Poľovnícke — názov</label><input type="text" class="txt-input" data-key="cat_polovnicke_title"></div>
+      <div class="field"><label>Poľovnícke — podnadpis</label><input type="text" class="txt-input" data-key="cat_polovnicke_sub"></div>
+      <div class="field"><label>Nábytok — názov</label><input type="text" class="txt-input" data-key="cat_nabytok_title"></div>
+      <div class="field"><label>Nábytok — podnadpis</label><input type="text" class="txt-input" data-key="cat_nabytok_sub"></div>
+      <div class="field"><label>Doplnky &amp; sochy — názov</label><input type="text" class="txt-input" data-key="cat_doplnky_title"></div>
+      <div class="field"><label>Doplnky &amp; sochy — podnadpis</label><input type="text" class="txt-input" data-key="cat_doplnky_sub"></div>
+    </div>
+  </div>
+
+  <!-- T5. GALÉRIA — POPISKY -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Galéria — popisky</span>
+      <span class="card-loc">— nadpis a text pri každej galérii</span>
+    </div>
+    <div class="card-desc">Texty vedľa galérií fotografií — každá kategória má H3 nadpis a popis.</div>
+    <div class="field-grid cols1">
+      <div class="field"><label>⛪ Sakrálne — nadpis H3</label><input type="text" class="txt-input" data-key="gal_sakralne_h3"></div>
+      <div class="field"><label>⛪ Sakrálne — popis</label><textarea class="txt-area" data-key="gal_sakralne_p" rows="2"></textarea></div>
+      <div class="field"><label>🎵 Hudobné — nadpis H3</label><input type="text" class="txt-input" data-key="gal_hudba_h3"></div>
+      <div class="field"><label>🎵 Hudobné — popis</label><textarea class="txt-area" data-key="gal_hudba_p" rows="2"></textarea></div>
+      <div class="field"><label>🦌 Poľovnícke — nadpis H3</label><input type="text" class="txt-input" data-key="gal_polovnicke_h3"></div>
+      <div class="field"><label>🦌 Poľovnícke — popis</label><textarea class="txt-area" data-key="gal_polovnicke_p" rows="2"></textarea></div>
+      <div class="field"><label>🛋 Nábytok — nadpis H3</label><input type="text" class="txt-input" data-key="gal_nabytok_h3"></div>
+      <div class="field"><label>🛋 Nábytok — popis</label><textarea class="txt-area" data-key="gal_nabytok_p" rows="2"></textarea></div>
+      <div class="field"><label>🎨 Doplnky &amp; sochy — nadpis H3</label><input type="text" class="txt-input" data-key="gal_doplnky_h3"></div>
+      <div class="field"><label>🎨 Doplnky &amp; sochy — popis</label><textarea class="txt-area" data-key="gal_doplnky_p" rows="2"></textarea></div>
+    </div>
+  </div>
+
+  <!-- T6. SEKCIA O MNE -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Sekcia O mne</span>
+      <span class="card-loc">— biografia, krajiny, kartičky, zručnosti</span>
+    </div>
+    <div class="card-desc">Tmavá sekcia s biografiou Štefana Polacseka, zoznamom krajín a 4 kartičkami.</div>
+    <div class="field-grid">
+      <div class="field"><label>Eyebrow (nad nadpisom)</label><input type="text" class="txt-input" data-key="omne_eyebrow" placeholder="Remeselník"></div>
+      <div class="field"><label>Nadpis H2</label><input type="text" class="txt-input" data-key="omne_h2"></div>
+    </div>
+    <div class="field-grid cols1" style="margin-top:10px;">
+      <div class="field"><label>Biografický odsek 1</label><textarea class="txt-area" data-key="omne_p1" rows="3"></textarea></div>
+      <div class="field"><label>Biografický odsek 2</label><textarea class="txt-area" data-key="omne_p2" rows="3"></textarea></div>
+      <div class="field"><label>Text pred zoznamom krajín</label><input type="text" class="txt-input" data-key="omne_countries_intro"></div>
+    </div>
+    <div class="field-grid" style="margin-top:10px;">
+      <div class="field"><label>Krajina 1</label><input type="text" class="txt-input" data-key="omne_country1"></div>
+      <div class="field"><label>Krajina 2</label><input type="text" class="txt-input" data-key="omne_country2"></div>
+      <div class="field"><label>Krajina 3</label><input type="text" class="txt-input" data-key="omne_country3"></div>
+      <div class="field"><label>Krajina 4</label><input type="text" class="txt-input" data-key="omne_country4"></div>
+      <div class="field"><label>Krajina 5</label><input type="text" class="txt-input" data-key="omne_country5"></div>
+      <div class="field"><label>Krajina 6</label><input type="text" class="txt-input" data-key="omne_country6"></div>
+      <div class="field"><label>Krajina 7</label><input type="text" class="txt-input" data-key="omne_country7"></div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:#2563eb;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;">Kartičky</div>
+    <div class="field-grid">
+      <div class="field"><label>Kartička 1 — nadpis</label><input type="text" class="txt-input" data-key="cred1_title"></div>
+      <div class="field"><label>Kartička 1 — text</label><input type="text" class="txt-input" data-key="cred1_text"></div>
+      <div class="field"><label>Kartička 2 — nadpis</label><input type="text" class="txt-input" data-key="cred2_title"></div>
+      <div class="field"><label>Kartička 2 — text</label><input type="text" class="txt-input" data-key="cred2_text"></div>
+      <div class="field"><label>Kartička 3 — nadpis</label><input type="text" class="txt-input" data-key="cred3_title"></div>
+      <div class="field"><label>Kartička 3 — text</label><input type="text" class="txt-input" data-key="cred3_text"></div>
+      <div class="field"><label>Kartička 4 — nadpis</label><input type="text" class="txt-input" data-key="cred4_title"></div>
+      <div class="field"><label>Kartička 4 — text</label><input type="text" class="txt-input" data-key="cred4_text"></div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:#2563eb;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;">Zoznam zručností (6 položiek)</div>
+    <div class="field-grid cols1">
+      <div class="field"><label>Zručnosť 1</label><input type="text" class="txt-input" data-key="feat1"></div>
+      <div class="field"><label>Zručnosť 2</label><input type="text" class="txt-input" data-key="feat2"></div>
+      <div class="field"><label>Zručnosť 3</label><input type="text" class="txt-input" data-key="feat3"></div>
+      <div class="field"><label>Zručnosť 4</label><input type="text" class="txt-input" data-key="feat4"></div>
+      <div class="field"><label>Zručnosť 5</label><input type="text" class="txt-input" data-key="feat5"></div>
+      <div class="field"><label>Zručnosť 6</label><input type="text" class="txt-input" data-key="feat6"></div>
+    </div>
+  </div>
+
+  <!-- T7. KONTAKT & FOOTER -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Kontakt &amp; Footer</span>
+      <span class="card-loc">— kontaktná sekcia, pätička</span>
+    </div>
+    <div class="card-desc">Texty v kontaktnej sekcii a texty v päte stránky.</div>
+    <div class="field-grid">
+      <div class="field"><label>Eyebrow (nad nadpisom)</label><input type="text" class="txt-input" data-key="kontakt_eyebrow"></div>
+      <div class="field"><label>Nadpis H2</label><input type="text" class="txt-input" data-key="kontakt_h2"></div>
+    </div>
+    <div class="field-grid cols1" style="margin-top:10px;">
+      <div class="field"><label>Popis pod nadpisom</label><textarea class="txt-area" data-key="kontakt_sub" rows="2"></textarea></div>
+      <div class="field">
+        <label>Adresa (každý riadok = nový riadok na stránke)</label>
+        <textarea class="txt-area" data-key="kontakt_adresa" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="field-grid" style="margin-top:10px;">
+      <div class="field"><label>Telefón (zobrazený)</label><input type="text" class="txt-input" data-key="kontakt_tel" placeholder="+421 905 815 775"></div>
+      <div class="field"><label>Telefón (href — bez medzier)</label><input type="text" class="txt-input" data-key="kontakt_tel_href" placeholder="+421905815775"></div>
+      <div class="field"><label>E-mail</label><input type="text" class="txt-input" data-key="kontakt_email"></div>
+      <div class="field"><label>IČO / DIČ</label><input type="text" class="txt-input" data-key="kontakt_ico"></div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:#2563eb;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;">Pätička</div>
+    <div class="field-grid">
+      <div class="field"><label>Copyright text (za © rok)</label><input type="text" class="txt-input" data-key="footer_copy"></div>
+      <div class="field"><label>Logo nápis v päte</label><input type="text" class="txt-input" data-key="footer_logo"></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-save" id="btn-save-texts" onclick="saveTexts()">Uložiť texty</button>
+    <button class="btn-reset" onclick="resetTexts()">Reset na pôvodné</button>
+  </div>
+  <div id="status-msg-texts"></div>
+
+  </div><!-- /tab-texts -->
+
 </div>
 
 <script>
@@ -409,6 +636,59 @@ var DEFAULTS = {
   fontSize:22
 };
 
+var DEFAULTS_TEXTS = {
+  logo_name:'LIPOREZ', logo_tagline:'Rezbárstvo & Stolárstvo od 1995',
+  nav_vyroba:'Výroba', nav_galeria:'Galéria', nav_omne:'O mne', nav_kontakt:'Kontakt',
+  hero_h1:'Precíznosť,<br>ktorú <em>vidieť</em><br>v každom reze',
+  hero_desc:'Vyrábam a vyrezávam na zákazku kompletné nábytkárske výrobky, rezbárske fragmenty, sakrálne predmety, hudobné nástroje i poľovnícke štítky. Začisťujem bez brúsneho papiera.',
+  hero_btn1:'Pozrieť výrobky', hero_btn2:'Kontaktovať',
+  stat1_num:'30+', stat1_label:'rokov tradície', stat2_num:'8', stat2_label:'krajín sveta',
+  stat3_num:'100%', stat3_label:'ručná práca', stat4_num:'0', stat4_label:'brúsny papier',
+  vyroba_eyebrow:'Čo robím', vyroba_h2:'Oblasti tvorby',
+  vyroba_sub:'Každý výrobok je originál. Pracujem takmer so všetkými druhmi dreva, podľa priania zákazníka.',
+  cat_sakralne_title:'Sakrálne predmety', cat_sakralne_sub:'Kríže, relikvie, oltárne rezby',
+  cat_hudba_title:'Hudobné nástroje', cat_hudba_sub:'Cimbal, husle, zdobenie nástrojov',
+  cat_polovnicke_title:'Poľovnícke', cat_polovnicke_sub:'Štítky, pažby, trofeje',
+  cat_nabytok_title:'Nábytok', cat_nabytok_sub:'Kuchynské linky, schodiská, kópie',
+  cat_doplnky_title:'Doplnky & sochy', cat_doplnky_sub:'Dekorácie, figúry, darčeky',
+  gal_sakralne_h3:'Sakrálne predmety',
+  gal_sakralne_p:'Kríže, svätostánky, relikvie a oltárne rezby. Precízna práca pre kostoly, kaplnky i súkromných zberateľov. Reštaurovanie historických sakrálnych predmetov.',
+  gal_hudba_h3:'Rezby na hudobné nástroje',
+  gal_hudba_p:'Zdobím cimbaly, husle a iné ľudové nástroje. Na fotografiách rezby na cimbal HOLÁK majstra Vladimíra Holiša z Kozlovíc pre ľudovú hudbu Rosenka z Košarísk.',
+  gal_polovnicke_h3:'Poľovnícke výrobky',
+  gal_polovnicke_p:'Trofejné poľovnícke štítky, úprava a zdobenie pažieb strelných zbraní, parohy. Aj sochy s poľovníckou tematikou — Diana bohyňa lovu (výška 70 cm).',
+  gal_nabytok_h3:'Nábytok & interiér',
+  gal_nabytok_p:'Kuchynské linky, schodiská, historické kópie nábytku. Reštaurovanie starožitného nábytku a výroba luxusných nábytkov na mieru. Povrchovú úpravu robím nemeckými a talianskými lakmi či olejmi.',
+  gal_doplnky_h3:'Doplnky & sochy',
+  gal_doplnky_p:'Dekoratívne predmety, figúry a sochy v životnej veľkosti, darčeky na objednávku. Každý kus je unikátny — sústruženie dreva, reliéfy, trojrozmerné rezby.',
+  omne_eyebrow:'Remeselník', omne_h2:'Rezbár a stolár s viac ako 30 rokmi skúseností',
+  omne_p1:'Rezbárčine som sa venoval v Strednom odbornom učilišti drevárskom v Oradei (rumunskom Varadíne). Po presťahovaní z Rumunska na Slovensko v roku 1990 som pôsobil vo Zvolene — Bučine, neskôr v umeleckom rezbárstve špecializovanom na luxusné nábytky v Dubnici nad Váhom.',
+  omne_p2:'Vyrábam takmer zo všetkých druhov dreva. Začisťovanie vykonávam bez použitia brúsneho papiera. Kvalitná povrchová úprava nemeckými a talianskými lakmi či olejmi, podľa priania zákazníka.',
+  omne_countries_intro:'Moje výrobky sa nachádzajú v:',
+  omne_country1:'Česká republika', omne_country2:'Rakúsko', omne_country3:'Nemecko',
+  omne_country4:'Francúzsko', omne_country5:'Anglicko', omne_country6:'USA', omne_country7:'Rumunsko',
+  cred1_title:'Czech-ART Festival 2011', cred1_text:'Cena organizátora Drevo-Sochy, České Budejovice',
+  cred2_title:'Bratislavský hrad', cred2_text:'Rám na obraz Márie Terézie na zrekonštrukovanom hrade',
+  cred3_title:'Všetky druhy dreva', cred3_text:'Dub, orech, lipa, buk, čerešňa, agát a ďalšie',
+  cred4_title:'Od roku 1995', cred4_text:'Kvalita a serióznosť je moje krédo',
+  feat1:'Čistota rezu — začisťovanie bez brúsneho papiera', feat2:'Nemecké a talianske laky a oleje',
+  feat3:'Reštaurovanie starožitného nábytku', feat4:'Kópie historických rezieb a nábytkov',
+  feat5:'Zdobenie hudobných nástrojov', feat6:'Úprava pažieb strelných zbraní',
+  kontakt_eyebrow:'Kde ma nájdete', kontakt_h2:'Kontakt',
+  kontakt_sub:'Napíšte alebo zavolajte — rád sa dohovorím na individuálnej zákazke.',
+  kontakt_adresa:'Malé Košecké Podhradie, Háj č. 251\n018 31 Košecké Podhradie',
+  kontakt_tel:'+421 905 815 775', kontakt_tel_href:'+421905815775',
+  kontakt_email:'liporez@centrum.sk', kontakt_ico:'47359021 / 2023831326',
+  footer_copy:'Štefan Polacsek — LIPOREZ · IČO: 47359021', footer_logo:'LIPOREZ'
+};
+
+function switchTab(tab) {
+  document.getElementById('tab-styles').style.display = tab === 'styles' ? 'block' : 'none';
+  document.getElementById('tab-texts').style.display  = tab === 'texts'  ? 'block' : 'none';
+  document.getElementById('tab-btn-styles').classList.toggle('active', tab === 'styles');
+  document.getElementById('tab-btn-texts').classList.toggle('active', tab === 'texts');
+}
+
 function doLogin() {
   var pwd = document.getElementById('pwd-input').value;
   if (pwd === 'liporez2024') {
@@ -416,6 +696,7 @@ function doLogin() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-panel').style.display = 'block';
     loadCurrentVars();
+    loadCurrentTexts();
   } else {
     document.getElementById('login-error').textContent = 'Nesprávne heslo.';
   }
@@ -572,6 +853,62 @@ function resetStyles() {
       updatePreview();
       var msg = g('status-msg');
       msg.textContent = '✓ Štýly resetované na predvolené.'; msg.className = 'ok';
+      setTimeout(function(){ msg.textContent=''; }, 4000);
+    });
+}
+
+function loadCurrentTexts() {
+  fetch('custom_texts.json?v=' + Date.now())
+    .then(function(r) { return r.ok ? r.json() : {}; })
+    .catch(function() { return {}; })
+    .then(function(v) {
+      document.querySelectorAll('[data-key]').forEach(function(el) {
+        var key = el.getAttribute('data-key');
+        var val = (v && v[key] !== undefined) ? v[key] : DEFAULTS_TEXTS[key] || '';
+        el.value = val;
+      });
+    });
+}
+
+function getTextValues() {
+  var out = { password: PASSWORD };
+  document.querySelectorAll('[data-key]').forEach(function(el) {
+    out[el.getAttribute('data-key')] = el.value;
+  });
+  return out;
+}
+
+function saveTexts() {
+  var btn = document.getElementById('btn-save-texts');
+  var msg = document.getElementById('status-msg-texts');
+  btn.disabled = true; btn.textContent = 'Ukladám…';
+  fetch('save_texts.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(getTextValues()) })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      btn.disabled = false; btn.textContent = 'Uložiť texty';
+      msg.textContent = data.ok ? '✓ Texty uložené — stránka je aktualizovaná.' : '✕ Chyba: ' + (data.error||'');
+      msg.className = data.ok ? 'ok' : 'err';
+      setTimeout(function(){ msg.textContent=''; }, 4000);
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = 'Uložiť texty';
+      document.getElementById('status-msg-texts').textContent = '✕ Chyba siete.';
+      document.getElementById('status-msg-texts').className = 'err';
+    });
+}
+
+function resetTexts() {
+  if (!confirm('Resetovať všetky texty na pôvodné hodnoty?')) return;
+  fetch('save_texts.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:PASSWORD, reset:true}) })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (!data.ok) return;
+      document.querySelectorAll('[data-key]').forEach(function(el) {
+        var key = el.getAttribute('data-key');
+        el.value = DEFAULTS_TEXTS[key] || '';
+      });
+      var msg = document.getElementById('status-msg-texts');
+      msg.textContent = '✓ Texty resetované na pôvodné.'; msg.className = 'ok';
       setTimeout(function(){ msg.textContent=''; }, 4000);
     });
 }
