@@ -448,16 +448,6 @@ function galleryItems(array $images, string $caption): string {
 </head>
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="topbar-contacts">
-    <span><a href="tel:+421905815775">+421 905 815 775</a></span>
-    <span><a href="mailto:liporez@centrum.sk">liporez@centrum.sk</a></span>
-    <span>Malé Košecké Podhradie, Slovensko</span>
-  </div>
-  <span>Výrobky v Európe a USA</span>
-</div>
-
 <!-- HEADER -->
 <header>
   <a href="#" class="logo" style="text-decoration:none; display:flex; align-items:center; gap:18px;">
