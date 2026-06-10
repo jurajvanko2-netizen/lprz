@@ -771,6 +771,18 @@ function galleryItems(array $images, string $caption): string {
     if (e.key === 'ArrowRight') lbNav(1);
   });
 
+  // ALIGN CRED CARDS TO FIRST PARAGRAPH
+  function alignCredCards() {
+    var h2 = document.querySelector('#omne .about-left h2');
+    var right = document.querySelector('#omne .about-right');
+    if (!h2 || !right) return;
+    if (window.innerWidth <= 768) { right.style.paddingTop = ''; return; }
+    var style = window.getComputedStyle(h2);
+    right.style.paddingTop = (h2.offsetHeight + parseFloat(style.marginBottom)) + 'px';
+  }
+  window.addEventListener('load', alignCredCards);
+  window.addEventListener('resize', alignCredCards);
+
   // EQUALIZE CRED CARDS
   (function() {
     var cards = Array.from(document.querySelectorAll('#omne .cred-card.featured'));
