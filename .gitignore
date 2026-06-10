@@ -1,0 +1,5 @@
+# Cache — generované serverom automaticky, nechceme v repozitári
+img/cache/*.jpg
+img/cache/*.jpeg
+img/cache/*.png
+img/cache/*.webp

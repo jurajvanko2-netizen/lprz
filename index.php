@@ -19,6 +19,11 @@ function getGalleryImages(string $category): array {
     return array_map(fn($f) => 'img/' . $category . '/' . basename($f), $files);
 }
 
+// Vráti URL cez img_cache.php (resize na max 1400px)
+function cachedImg(string $src): string {
+    return 'img_cache.php?src=' . urlencode($src);
+}
+
 $sakralne   = getGalleryImages('sakralne');
 $hudba      = getGalleryImages('hudba');
 $polovnicke = getGalleryImages('polovnicke');
@@ -31,10 +36,11 @@ function galleryItems(array $images, string $caption): string {
     }
     $out = '';
     foreach ($images as $img) {
-        $src = htmlspecialchars($img);
+        $raw = htmlspecialchars($img);               // originál pre lightbox
+        $cached = htmlspecialchars(cachedImg($img)); // cache pre thumbnail
         $cap = htmlspecialchars($caption);
-        $out .= '<div class="gallery-item" onclick="openLightbox(\'' . $src . '\',\'' . $cap . '\')">';
-        $out .= '<img src="' . $src . '" alt="' . $cap . ' — LIPOREZ" loading="lazy">';
+        $out .= '<div class="gallery-item" onclick="openLightbox(\'' . $raw . '\',\'' . $cap . '\')">';
+        $out .= '<img src="' . $cached . '" alt="' . $cap . ' — LIPOREZ" loading="lazy">';
         $out .= '</div>';
     }
     return $out;
@@ -491,7 +497,7 @@ function galleryItems(array $images, string $caption): string {
   </div>
   <div style="border-radius:10px; overflow:hidden; cursor:pointer; height:100%;"
        onclick="openLightbox('img/art_4_1.jpg','Ukážka rezbárskej práce')">
-    <img src="img/art_4_1.jpg" alt="Ukážka rezbárskej práce Štefan Polacsek LIPOREZ"
+    <img src="<?= htmlspecialchars(cachedImg('img/art_4_1.jpg')) ?>" alt="Ukážka rezbárskej práce Štefan Polacsek LIPOREZ"
          style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.3s;">
   </div>
 </div>
@@ -524,7 +530,7 @@ function galleryItems(array $images, string $caption): string {
         $previewImg = !empty($catImgs) ? $catImgs[0] : $imgFallback;
     ?>
     <div class="cat-card">
-      <img class="cat-card-img" src="<?= htmlspecialchars($previewImg) ?>" alt="<?= $title ?> — rezbárstvo na zákazku LIPOREZ"
+      <img class="cat-card-img" src="<?= htmlspecialchars(cachedImg($previewImg)) ?>" alt="<?= $title ?> — rezbárstvo na zákazku LIPOREZ"
            onclick="openLightbox('<?= htmlspecialchars($previewImg) ?>','<?= $title ?>')">
       <div class="cat-card-body">
         <div class="cat-card-title"><?= $title ?></div>
