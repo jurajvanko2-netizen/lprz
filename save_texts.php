@@ -34,8 +34,6 @@ $ALLOWED_KEYS = [
     'gal_nabytok_h3','gal_nabytok_p',
     'gal_doplnky_h3','gal_doplnky_p',
     'omne_eyebrow','omne_h2','omne_p1','omne_p2','omne_countries_intro',
-    'omne_country1','omne_country2','omne_country3','omne_country4',
-    'omne_country5','omne_country6','omne_country7',
     'cred1_title','cred1_text','cred2_title','cred2_text',
     'cred3_title','cred3_text','cred4_title','cred4_text',
     'feat1','feat2','feat3','feat4','feat5','feat6',
@@ -47,14 +45,20 @@ $ALLOWED_KEYS = [
 $out = [];
 foreach ($ALLOWED_KEYS as $key) {
     if (isset($data[$key])) {
-        // Bezpečné: max 2000 znakov, strip null bajty
         $val = str_replace("\0", '', substr((string)$data[$key], 0, 2000));
-        // Pre hero_h1 ponechaj <br> a <em>/<strong>, ostatné escapuj
         if ($key === 'hero_h1') {
             $val = strip_tags($val, '<br><em><strong>');
         }
         $out[$key] = $val;
     }
+}
+
+// Krajiny — dynamické pole
+if (isset($data['omne_countries']) && is_array($data['omne_countries'])) {
+    $countries = array_values(array_filter(array_map(function($c) {
+        return str_replace("\0", '', substr(trim((string)$c), 0, 100));
+    }, $data['omne_countries'])));
+    $out['omne_countries'] = $countries;
 }
 
 file_put_contents(__DIR__.'/custom_texts.json', json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));

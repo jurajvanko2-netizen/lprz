@@ -70,13 +70,7 @@ $DTXT = [
     'omne_p1'              => 'Rezbárčine som sa venoval v Strednom odbornom učilišti drevárskom v Oradei (rumunskom Varadíne). Po presťahovaní z Rumunska na Slovensko v roku 1990 som pôsobil vo Zvolene — Bučine, neskôr v umeleckom rezbárstve špecializovanom na luxusné nábytky v Dubnici nad Váhom.',
     'omne_p2'              => 'Vyrábam takmer zo všetkých druhov dreva. Začisťovanie vykonávam bez použitia brúsneho papiera. Kvalitná povrchová úprava nemeckými a talianskými lakmi či olejmi, podľa priania zákazníka.',
     'omne_countries_intro' => 'Moje výrobky sa nachádzajú v:',
-    'omne_country1'        => 'Česká republika',
-    'omne_country2'        => 'Rakúsko',
-    'omne_country3'        => 'Nemecko',
-    'omne_country4'        => 'Francúzsko',
-    'omne_country5'        => 'Anglicko',
-    'omne_country6'        => 'USA',
-    'omne_country7'        => 'Rumunsko',
+    'omne_countries'       => ['Česká republika','Rakúsko','Nemecko','Francúzsko','Anglicko','USA','Rumunsko'],
     'cred1_title'          => 'Czech-ART Festival 2011',
     'cred1_text'           => 'Cena organizátora Drevo-Sochy, České Budejovice',
     'cred2_title'          => 'Bratislavský hrad',
@@ -667,13 +661,14 @@ function galleryItems(array $images, string $caption): string {
       <p style="color:#C4A882;"><?= T('omne_p2') ?></p>
       <p style="font-style:italic;font-size:19px;color:#B09070;margin-top:24px;margin-bottom:12px;"><?= T('omne_countries_intro') ?></p>
       <div class="countries">
-        <span class="country-pill"><?= T('omne_country1') ?></span>
-        <span class="country-pill"><?= T('omne_country2') ?></span>
-        <span class="country-pill"><?= T('omne_country3') ?></span>
-        <span class="country-pill"><?= T('omne_country4') ?></span>
-        <span class="country-pill"><?= T('omne_country5') ?></span>
-        <span class="country-pill"><?= T('omne_country6') ?></span>
-        <span class="country-pill"><?= T('omne_country7') ?></span>
+        <?php
+        $ctArr = $customTexts['omne_countries'] ?? $DTXT['omne_countries'];
+        if (!is_array($ctArr)) $ctArr = $DTXT['omne_countries'];
+        foreach ($ctArr as $c) {
+            $c = trim($c);
+            if ($c) echo '<span class="country-pill">' . htmlspecialchars($c, ENT_QUOTES|ENT_HTML5, 'UTF-8') . '</span>';
+        }
+        ?>
       </div>
     </div>
 

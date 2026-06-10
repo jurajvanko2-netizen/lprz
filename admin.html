@@ -553,15 +553,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
       <div class="field"><label>Biografický odsek 2</label><textarea class="txt-area" data-key="omne_p2" rows="3"></textarea></div>
       <div class="field"><label>Text pred zoznamom krajín</label><input type="text" class="txt-input" data-key="omne_countries_intro"></div>
     </div>
-    <div class="field-grid" style="margin-top:10px;">
-      <div class="field"><label>Krajina 1</label><input type="text" class="txt-input" data-key="omne_country1"></div>
-      <div class="field"><label>Krajina 2</label><input type="text" class="txt-input" data-key="omne_country2"></div>
-      <div class="field"><label>Krajina 3</label><input type="text" class="txt-input" data-key="omne_country3"></div>
-      <div class="field"><label>Krajina 4</label><input type="text" class="txt-input" data-key="omne_country4"></div>
-      <div class="field"><label>Krajina 5</label><input type="text" class="txt-input" data-key="omne_country5"></div>
-      <div class="field"><label>Krajina 6</label><input type="text" class="txt-input" data-key="omne_country6"></div>
-      <div class="field"><label>Krajina 7</label><input type="text" class="txt-input" data-key="omne_country7"></div>
+    <div style="display:flex;align-items:center;gap:12px;margin-top:14px;margin-bottom:8px;">
+      <span style="font-size:12px;font-weight:700;color:#2563eb;letter-spacing:1px;text-transform:uppercase;">Krajiny</span>
+      <button type="button" onclick="addCountry()" style="padding:4px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;font-size:12px;color:#2563eb;cursor:pointer;">+ Pridať krajinu</button>
     </div>
+    <div id="countries-list"></div>
     <div style="font-size:12px;font-weight:700;color:#2563eb;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px;">Kartičky</div>
     <div class="field-grid">
       <div class="field"><label>Kartička 1 — nadpis</label><input type="text" class="txt-input" data-key="cred1_title"></div>
@@ -695,8 +691,7 @@ var DEFAULTS_TEXTS = {
   omne_p1:'Rezbárčine som sa venoval v Strednom odbornom učilišti drevárskom v Oradei (rumunskom Varadíne). Po presťahovaní z Rumunska na Slovensko v roku 1990 som pôsobil vo Zvolene — Bučine, neskôr v umeleckom rezbárstve špecializovanom na luxusné nábytky v Dubnici nad Váhom.',
   omne_p2:'Vyrábam takmer zo všetkých druhov dreva. Začisťovanie vykonávam bez použitia brúsneho papiera. Kvalitná povrchová úprava nemeckými a talianskými lakmi či olejmi, podľa priania zákazníka.',
   omne_countries_intro:'Moje výrobky sa nachádzajú v:',
-  omne_country1:'Česká republika', omne_country2:'Rakúsko', omne_country3:'Nemecko',
-  omne_country4:'Francúzsko', omne_country5:'Anglicko', omne_country6:'USA', omne_country7:'Rumunsko',
+  omne_countries:['Česká republika','Rakúsko','Nemecko','Francúzsko','Anglicko','USA','Rumunsko'],
   cred1_title:'Czech-ART Festival 2011', cred1_text:'Cena organizátora Drevo-Sochy, České Budejovice',
   cred2_title:'Bratislavský hrad', cred2_text:'Rám na obraz Márie Terézie na zrekonštrukovanom hrade',
   cred3_title:'Všetky druhy dreva', cred3_text:'Dub, orech, lipa, buk, čerešňa, agát a ďalšie',
@@ -940,6 +935,46 @@ function resetStyles() {
     });
 }
 
+// ── KRAJINY ──────────────────────────────────────────────────────────────────
+function renderCountries(arr) {
+  var list = document.getElementById('countries-list');
+  list.innerHTML = '';
+  (arr || []).forEach(function(name) { addCountryEl(name); });
+}
+
+function addCountryEl(name) {
+  var list = document.getElementById('countries-list');
+  var row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px;';
+  var inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'txt-input';
+  inp.value = name || '';
+  inp.placeholder = 'napr. Slovensko';
+  inp.style.flex = '1';
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.textContent = '✕';
+  btn.title = 'Odstrániť krajinu';
+  btn.style.cssText = 'padding:5px 10px;background:#fff;border:1px solid #cbd5e1;border-radius:4px;cursor:pointer;color:#64748b;font-size:12px;flex-shrink:0;';
+  btn.onmouseover = function(){ this.style.background='#fee2e2'; this.style.borderColor='#fca5a5'; this.style.color='#dc2626'; };
+  btn.onmouseout  = function(){ this.style.background='#fff';    this.style.borderColor='#cbd5e1'; this.style.color='#64748b'; };
+  btn.onclick = function() { list.removeChild(row); };
+  row.appendChild(inp);
+  row.appendChild(btn);
+  list.appendChild(row);
+  inp.focus();
+}
+
+function addCountry() { addCountryEl(''); }
+
+function getCountriesArray() {
+  return Array.from(document.querySelectorAll('#countries-list input'))
+    .map(function(i) { return i.value.trim(); })
+    .filter(function(v) { return v; });
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 function loadCurrentTexts() {
   fetch('custom_texts.json?v=' + Date.now())
     .then(function(r) { return r.ok ? r.json() : {}; })
@@ -950,6 +985,10 @@ function loadCurrentTexts() {
         var val = (v && v[key] !== undefined) ? v[key] : DEFAULTS_TEXTS[key] || '';
         el.value = val;
       });
+      // Krajiny — dynamický zoznam
+      var countries = (v && v['omne_countries']) ? v['omne_countries'] : DEFAULTS_TEXTS.omne_countries;
+      if (!Array.isArray(countries)) countries = DEFAULTS_TEXTS.omne_countries;
+      renderCountries(countries);
     });
 }
 
@@ -958,6 +997,7 @@ function getTextValues() {
   document.querySelectorAll('[data-key]').forEach(function(el) {
     out[el.getAttribute('data-key')] = el.value;
   });
+  out['omne_countries'] = getCountriesArray();
   return out;
 }
 
@@ -990,6 +1030,7 @@ function resetTexts() {
         var key = el.getAttribute('data-key');
         el.value = DEFAULTS_TEXTS[key] || '';
       });
+      renderCountries(DEFAULTS_TEXTS.omne_countries);
       var msg = document.getElementById('status-msg-texts');
       msg.textContent = '✓ Texty resetované na pôvodné.'; msg.className = 'ok';
       setTimeout(function(){ msg.textContent=''; }, 4000);
