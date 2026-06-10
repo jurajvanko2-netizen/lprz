@@ -5,8 +5,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405); echo json_encode(['ok'=>false,'error'=>'Method not allowed']); exit;
 }
 
+require_once __DIR__ . '/password_config.php';
 $data = json_decode(file_get_contents('php://input'), true);
-if (!$data || ($data['password'] ?? '') !== 'liporez2024') {
+if (!$data || !verifyAdminPassword($data['password'] ?? '')) {
     http_response_code(403); echo json_encode(['ok'=>false,'error'=>'Nesprávne heslo']); exit;
 }
 

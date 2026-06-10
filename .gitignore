@@ -3,3 +3,6 @@ img/cache/*.jpg
 img/cache/*.jpeg
 img/cache/*.png
 img/cache/*.webp
+
+# Admin heslo — ukladá sa na serveri, nesmie byť v git
+admin_password.txt

@@ -97,6 +97,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
   <div class="tab-nav">
     <button class="tab-btn active" id="tab-btn-styles" onclick="switchTab('styles')">🎨 Štýly</button>
     <button class="tab-btn" id="tab-btn-texts" onclick="switchTab('texts')">✏️ Texty</button>
+    <button class="tab-btn" id="tab-btn-pwd" onclick="switchTab('pwd')">🔑 Heslo</button>
   </div>
 
   <!-- TAB: ŠTÝLY -->
@@ -622,6 +623,35 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 
   </div><!-- /tab-texts -->
 
+  <!-- TAB: HESLO -->
+  <div id="tab-pwd" style="display:none;">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Zmena hesla</span>
+      <span class="card-loc">— prístup do admin rozhrania</span>
+    </div>
+    <div class="card-desc">Zadajte aktuálne heslo, potom nové heslo (min. 6 znakov) a potvrďte ho. Nové heslo sa použije pri každom ďalšom prihlásení.</div>
+    <div class="field-grid cols1" style="max-width:400px;">
+      <div class="field">
+        <label>Aktuálne heslo</label>
+        <input type="password" id="cp-old" class="txt-input" autocomplete="current-password">
+      </div>
+      <div class="field">
+        <label>Nové heslo</label>
+        <input type="password" id="cp-new" class="txt-input" autocomplete="new-password">
+      </div>
+      <div class="field">
+        <label>Potvrdiť nové heslo</label>
+        <input type="password" id="cp-confirm" class="txt-input" autocomplete="new-password">
+      </div>
+    </div>
+    <div class="actions" style="max-width:400px; margin-top:16px;">
+      <button class="btn-save" id="btn-change-pwd" onclick="changePassword()">Zmeniť heslo</button>
+    </div>
+    <div id="status-msg-pwd" style="margin-top:10px;font-size:14px;min-height:20px;"></div>
+  </div>
+  </div><!-- /tab-pwd -->
+
 </div>
 
 <script>
@@ -683,23 +713,76 @@ var DEFAULTS_TEXTS = {
 };
 
 function switchTab(tab) {
-  document.getElementById('tab-styles').style.display = tab === 'styles' ? 'block' : 'none';
-  document.getElementById('tab-texts').style.display  = tab === 'texts'  ? 'block' : 'none';
-  document.getElementById('tab-btn-styles').classList.toggle('active', tab === 'styles');
-  document.getElementById('tab-btn-texts').classList.toggle('active', tab === 'texts');
+  ['styles','texts','pwd'].forEach(function(t) {
+    document.getElementById('tab-'+t).style.display = t === tab ? 'block' : 'none';
+    document.getElementById('tab-btn-'+t).classList.toggle('active', t === tab);
+  });
 }
 
 function doLogin() {
   var pwd = document.getElementById('pwd-input').value;
-  if (pwd === 'liporez2024') {
-    PASSWORD = pwd;
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin-panel').style.display = 'block';
-    loadCurrentVars();
-    loadCurrentTexts();
-  } else {
-    document.getElementById('login-error').textContent = 'Nesprávne heslo.';
+  var errEl = document.getElementById('login-error');
+  var btn = document.querySelector('.btn-login');
+  errEl.textContent = '';
+  btn.disabled = true; btn.textContent = 'Overujem…';
+  fetch('admin_auth.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pwd}) })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      btn.disabled = false; btn.textContent = 'Prihlásiť sa';
+      if (data.ok) {
+        PASSWORD = pwd;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('admin-panel').style.display = 'block';
+        loadCurrentVars();
+        loadCurrentTexts();
+      } else {
+        errEl.textContent = 'Nesprávne heslo.';
+      }
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = 'Prihlásiť sa';
+      errEl.textContent = 'Chyba servera — skúste znova.';
+    });
+}
+
+function changePassword() {
+  var oldPwd  = document.getElementById('cp-old').value;
+  var newPwd  = document.getElementById('cp-new').value;
+  var confPwd = document.getElementById('cp-confirm').value;
+  var msg = document.getElementById('status-msg-pwd');
+  msg.textContent = ''; msg.className = '';
+  if (!oldPwd || !newPwd || !confPwd) {
+    msg.textContent = 'Vyplňte všetky tri polia.'; msg.className = 'err'; return;
   }
+  if (newPwd !== confPwd) {
+    msg.textContent = 'Nové heslá sa nezhodujú.'; msg.className = 'err'; return;
+  }
+  if (newPwd.length < 6) {
+    msg.textContent = 'Nové heslo musí mať aspoň 6 znakov.'; msg.className = 'err'; return;
+  }
+  var btn = document.getElementById('btn-change-pwd');
+  btn.disabled = true; btn.textContent = 'Mením…';
+  fetch('change_password.php', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({oldPassword:oldPwd, newPassword:newPwd}) })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      btn.disabled = false; btn.textContent = 'Zmeniť heslo';
+      if (data.ok) {
+        PASSWORD = newPwd;
+        document.getElementById('cp-old').value = '';
+        document.getElementById('cp-new').value = '';
+        document.getElementById('cp-confirm').value = '';
+        msg.textContent = '✓ Heslo zmenené. Pri ďalšom prihlásení použite nové heslo.';
+        msg.className = 'ok';
+        setTimeout(function(){ msg.textContent=''; }, 7000);
+      } else {
+        msg.textContent = '✕ ' + (data.error || 'Chyba'); msg.className = 'err';
+      }
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = 'Zmeniť heslo';
+      msg.textContent = '✕ Chyba siete.'; msg.className = 'err';
+    });
 }
 document.getElementById('pwd-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
 
