@@ -418,6 +418,23 @@ function galleryItems(array $images, string $caption): string {
     section#omne { padding-left: 20px !important; padding-right: 20px !important; }
   }
 
+  /* SHOW MORE */
+  .show-more-btn {
+    display: block;
+    margin: 24px auto 0;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background: transparent;
+    color: #7C5230;
+    border: 1px solid #7C5230;
+    padding: 10px 32px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .show-more-btn:hover { background: #7C5230; color: #F0DEC0; }
+
   @media (max-width: 480px) {
     .hero h1 { font-size: 28px; }
     .cat-grid { grid-template-columns: 1fr; }
@@ -427,6 +444,7 @@ function galleryItems(array $images, string $caption): string {
     .stat { flex: 1 1 100%; }
   }
 </style>
+<link rel="stylesheet" href="custom.css">
 </head>
 <body>
 
@@ -537,11 +555,26 @@ function galleryItems(array $images, string $caption): string {
 <section id="omne" style="background:#2A1608; padding-top:72px; padding-bottom:72px; padding-left: max(40px, calc((100% - 1240px) / 2)); padding-right: max(40px, calc((100% - 1240px) / 2))">
   <span class="section-eyebrow section-eyebrow-light">Remeselník</span>
   <div class="about-grid">
+    <!-- VĽAVO: nadpis, text -->
     <div class="about-left">
       <h2 class="light">Rezbár a stolár s viac ako 30 rokmi skúseností</h2>
       <p style="color:#C4A882;">Rezbárčine som sa venoval v Strednom odbornom učilišti drevárskom v Oradei (rumunskom Varadíne). Po presťahovaní z Rumunska na Slovensko v roku 1990 som pôsobil vo Zvolene — Bučine, neskôr v umeleckom rezbárstve špecializovanom na luxusné nábytky v Dubnici nad Váhom.</p>
       <p style="color:#C4A882;">Vyrábam takmer zo všetkých druhov dreva. Začisťovanie vykonávam bez použitia brúsneho papiera. Kvalitná povrchová úprava nemeckými a talianskými lakmi či olejmi, podľa priania zákazníka.</p>
-      <div class="cred-grid" style="margin-top:8px;">
+      <p style="font-style:italic;font-size:19px;color:#B09070;margin-top:24px;margin-bottom:12px;">Moje výrobky sa nachádzajú v:</p>
+      <div class="countries">
+        <span class="country-pill">Česká republika</span>
+        <span class="country-pill">Rakúsko</span>
+        <span class="country-pill">Nemecko</span>
+        <span class="country-pill">Francúzsko</span>
+        <span class="country-pill">Anglicko</span>
+        <span class="country-pill">USA</span>
+        <span class="country-pill">Rumunsko</span>
+      </div>
+    </div>
+
+    <!-- VPRAVO: kartičky -->
+    <div class="about-right">
+      <div class="cred-grid" style="height:100%;">
         <div class="cred-card featured" style="padding:12px 14px;">
           <div class="cred-title" style="font-size:17px;">Czech-ART Festival 2011</div>
           <div class="cred-text" style="font-size:15px;">Cena organizátora Drevo-Sochy, České Budejovice</div>
@@ -559,17 +592,8 @@ function galleryItems(array $images, string $caption): string {
           <div class="cred-text" style="font-size:15px;">Kvalita a serióznosť je moje krédo</div>
         </div>
       </div>
-      <p style="font-style:italic;font-size:19px;color:#B09070;margin-top:24px;margin-bottom:12px;">Moje výrobky sa nachádzajú v:</p>
-      <div class="countries">
-        <span class="country-pill">Česká republika</span>
-        <span class="country-pill">Rakúsko</span>
-        <span class="country-pill">Nemecko</span>
-        <span class="country-pill">Francúzsko</span>
-        <span class="country-pill">Anglicko</span>
-        <span class="country-pill">USA</span>
-        <span class="country-pill">Rumunsko</span>
-      </div>
     </div>
+
   </div>
   <ul class="features" style="margin-top:40px; columns:2; column-gap:60px; color:#C4A882;">
     <li>Čistota rezu — začisťovanie bez brúsneho papiera</li>
@@ -757,6 +781,35 @@ function galleryItems(array $images, string $caption): string {
     if (e.key === 'ArrowLeft') lbNav(-1);
     if (e.key === 'ArrowRight') lbNav(1);
   });
+
+  // SHOW MORE
+  (function() {
+    var PAGE_SIZE = 15;
+    document.querySelectorAll('.gallery-grid').forEach(function(grid) {
+      var items = Array.from(grid.querySelectorAll('.gallery-item'));
+      if (items.length <= PAGE_SIZE) return;
+      var shown = PAGE_SIZE;
+      items.forEach(function(item, i) {
+        if (i >= PAGE_SIZE) item.style.display = 'none';
+      });
+      var btn = document.createElement('button');
+      btn.className = 'show-more-btn';
+      btn.textContent = 'Ukázať viac (' + (items.length - shown) + ')';
+      grid.insertAdjacentElement('afterend', btn);
+      btn.addEventListener('click', function() {
+        var nextShown = Math.min(shown + PAGE_SIZE, items.length);
+        for (var i = shown; i < nextShown; i++) {
+          items[i].style.display = '';
+        }
+        shown = nextShown;
+        if (shown >= items.length) {
+          btn.style.display = 'none';
+        } else {
+          btn.textContent = 'Ukázať viac (' + (items.length - shown) + ')';
+        }
+      });
+    });
+  })();
 </script>
 </body>
 </html>
