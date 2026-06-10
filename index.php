@@ -279,7 +279,7 @@ function galleryItems(array $images, string $caption): string {
   .gallery-item:hover img { transform: scale(1.06); }
 
   /* ABOUT */
-  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: stretch; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
   .about-left { display: flex; flex-direction: column; }
   .about-badge {
     display: inline-flex; align-items: center; gap: 8px;
@@ -304,7 +304,7 @@ function galleryItems(array $images, string $caption): string {
   }
 
   /* CRED CARDS */
-  .cred-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-content: start; align-items: start; }
+  .cred-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-content: start; }
   .cred-card {
     background: rgba(124,82,48,0.1); border: 1px solid rgba(124,82,48,0.25);
     border-radius: 8px; padding: 16px 18px;
@@ -781,6 +781,14 @@ function galleryItems(array $images, string $caption): string {
     if (e.key === 'ArrowLeft') lbNav(-1);
     if (e.key === 'ArrowRight') lbNav(1);
   });
+
+  // EQUALIZE CRED CARDS
+  (function() {
+    var cards = Array.from(document.querySelectorAll('#omne .cred-card.featured'));
+    if (!cards.length) return;
+    var maxH = Math.max.apply(null, cards.map(function(c) { return c.offsetHeight; }));
+    cards.forEach(function(c) { c.style.minHeight = maxH + 'px'; });
+  })();
 
   // SHOW MORE
   (function() {
