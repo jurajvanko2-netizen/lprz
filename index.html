@@ -844,9 +844,8 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-copy">© 2024 Štefan Polacsek — LIPOREZ &nbsp;·&nbsp; IČO: 47359021</div>
+  <div class="footer-copy">© <span id="footer-year"></span> Štefan Polacsek — LIPOREZ &nbsp;·&nbsp; IČO: 47359021</div>
   <div class="footer-logo">LIPOREZ</div>
-  <div class="footer-motto">Kvalita a serióznosť je moje krédo.</div>
 </footer>
 
 <!-- LIGHTBOX -->
@@ -892,6 +891,8 @@
     if (e.key === 'ArrowLeft') lbNav(-1);
     if (e.key === 'ArrowRight') lbNav(1);
   });
+
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
 
   // EQUALIZE CRED CARDS
   (function() {

@@ -723,9 +723,8 @@ function galleryItems(array $images, string $caption): string {
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-copy">© 2024 Štefan Polacsek — LIPOREZ &nbsp;·&nbsp; IČO: 47359021</div>
+  <div class="footer-copy">© <?= date('Y') ?> Štefan Polacsek — LIPOREZ &nbsp;·&nbsp; IČO: 47359021</div>
   <div class="footer-logo">LIPOREZ</div>
-  <div class="footer-motto">Kvalita a serióznosť je moje krédo.</div>
 </footer>
 
 <!-- LIGHTBOX -->
